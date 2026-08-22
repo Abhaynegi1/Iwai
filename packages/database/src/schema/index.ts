@@ -20,6 +20,6 @@
  */
 
 // Schema barrel — import domain schemas here as they are created
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export {};
+
 

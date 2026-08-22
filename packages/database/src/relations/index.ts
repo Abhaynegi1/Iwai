@@ -17,6 +17,6 @@
  */
 
 // Relations barrel — add domain relations here as tables are created
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export {};
+
 

@@ -13,6 +13,8 @@ export default tseslint.config(...baseConfig, {
   rules: {
     // NestJS uses decorators and DI patterns that trigger these
     "@typescript-eslint/no-explicit-any": "warn",
+    // In NestJS, constructor parameters must be value imports for emitDecoratorMetadata reflection
+    "@typescript-eslint/consistent-type-imports": "off",
     // Allow parameter decorators to appear unused
     "@typescript-eslint/no-unused-vars": [
       "error",
