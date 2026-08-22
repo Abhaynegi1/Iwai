@@ -12,8 +12,11 @@
  *   - schema      Re-exported schema (for use in query builders)
  */
 
-export { db } from "./client.js";
-export type { Database } from "./client.js";
+export { db, createDbClient } from "./client";
+export type { Database } from "./client";
 
-// Re-export schema for use in the API
-export * as schema from "./schema/index.js";
+export * as schema from "./schema/index";
+export * as relations from "./relations/index";
+export * from "./schema/index";
+export * from "./relations/index";
+

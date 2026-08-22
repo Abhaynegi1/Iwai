@@ -1,31 +1,36 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import * as schema from "./schema/index.js";
+import * as schema from "./schema/index";
 
 /**
  * Create a Drizzle database client.
  *
- * Reads DATABASE_URL from environment. The URL must be set before
- * importing this module (e.g., loaded via dotenv in the API bootstrap).
+ * Reads DATABASE_URL from environment or an explicit connection string.
  *
- * Only the API should import this module.
+ * Only apps/api should import this package.
  * Web and Mobile must never access the database directly.
  */
 
-const DATABASE_URL = process.env["DATABASE_URL"];
+export function createDbClient(connectionString?: string) {
+  const url = connectionString ?? process.env["DATABASE_URL"];
 
-if (!DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL environment variable is not set. " +
-      "Please copy .env.example to .env.local and configure your database connection.",
-  );
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL environment variable is not set. " +
+        "Please configure DATABASE_URL in your .env file.",
+    );
+  }
+
+  const queryClient = postgres(url, {
+    // Disable prepared statements for connection poolers (e.g. Neon, PgBouncer, Supabase)
+    prepare: false,
+  });
+
+  return drizzle(queryClient, { schema });
 }
 
-const queryClient = postgres(DATABASE_URL, {
-  // Disable prepared statements for better compatibility with connection poolers (e.g. PgBouncer)
-  prepare: false,
-});
+// Default client instance for standard usage
+export const db = createDbClient(process.env["DATABASE_URL"] || "postgresql://placeholder:placeholder@localhost:5432/placeholder");
 
-export const db = drizzle(queryClient, { schema });
+export type Database = ReturnType<typeof createDbClient>;
 
-export type Database = typeof db;

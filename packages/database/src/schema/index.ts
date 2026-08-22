@@ -1,25 +1,12 @@
 /**
  * IWAI Database Schema
  *
- * Domain tables will be added here as features are designed and built.
- *
- * Planned tables (NOT implemented yet — schema design phase pending):
- *   - users
- *   - organizations
- *   - events
- *   - event_attendees
- *   - photos
- *   - photo_processing_jobs
- *   - subscriptions
- *   - payments
- *
- * Each domain will have its own schema file imported here:
- *   export * from "./users.js";
- *   export * from "./events.js";
- *   ...etc
+ * All PostgreSQL table definitions, enums, and types for Drizzle ORM.
  */
 
-// Schema barrel — import domain schemas here as they are created
-export {};
-
-
+export * from "./users";
+export * from "./organizations";
+export * from "./events";
+export * from "./attendees";
+export * from "./photos";
+export * from "./subscriptions";
