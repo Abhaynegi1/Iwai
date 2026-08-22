@@ -1,0 +1,24 @@
+{
+  "name": "@iwai/config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./prettier": "./prettier/index.js",
+    "./eslint/base": "./eslint/base.mjs",
+    "./eslint/nextjs": "./eslint/nextjs.mjs",
+    "./eslint/nestjs": "./eslint/nestjs.mjs",
+    "./eslint/react-native": "./eslint/react-native.mjs",
+    "./tsconfig/base.json": "./tsconfig/base.json",
+    "./tsconfig/nextjs.json": "./tsconfig/nextjs.json",
+    "./tsconfig/nestjs.json": "./tsconfig/nestjs.json",
+    "./tsconfig/react-native.json": "./tsconfig/react-native.json"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "globals": "^16.0.0",
+    "typescript-eslint": "^8.0.0"
+  }
+}
+

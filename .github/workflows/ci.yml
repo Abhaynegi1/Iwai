@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  PNPM_VERSION: "10"
+
+jobs:
+  ci:
+    name: Lint · Typecheck · Build · Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ─── Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Needed for Turborepo affected detection
+
+      # ─── Node.js ───────────────────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # ─── pnpm ──────────────────────────────────────────────────────────────
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      # ─── Cache ─────────────────────────────────────────────────────────────
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      # ─── Install ───────────────────────────────────────────────────────────
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ─── Lint ──────────────────────────────────────────────────────────────
+      - name: Lint
+        run: pnpm lint
+
+      # ─── Typecheck ─────────────────────────────────────────────────────────
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # ─── Build ─────────────────────────────────────────────────────────────
+      - name: Build
+        run: pnpm build
+
+      # ─── Test ──────────────────────────────────────────────────────────────
+      - name: Test
+        run: pnpm test

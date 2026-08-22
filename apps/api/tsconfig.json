@@ -1,0 +1,15 @@
+{
+  "extends": "../../packages/config/tsconfig/nestjs.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "@iwai/shared": ["../../packages/shared/src/index.ts"],
+      "@iwai/validation": ["../../packages/validation/src/index.ts"],
+      "@iwai/database": ["../../packages/database/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

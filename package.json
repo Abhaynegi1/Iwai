@@ -1,0 +1,38 @@
+{
+  "name": "iwai",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,css}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,css}\" --ignore-path .prettierignore",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "turbo": "latest",
+    "typescript": "^5.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver",
+      "@swc/core",
+      "better-sqlite3",
+      "canvas"
+    ],
+    "peerDependencyRules": {
+      "ignoreMissing": [],
+      "allowedVersions": {
+        "react": "18 || 19",
+        "react-dom": "18 || 19"
+      }
+    }
+  }
+}
