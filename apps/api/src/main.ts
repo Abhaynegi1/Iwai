@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { ValidationPipe, VersioningType } from "@nestjs/common";
+import { GlobalExceptionFilter, TransformInterceptor } from "./common";
 import { AppModule } from "./app.module";
 
 async function bootstrap(): Promise<void> {
@@ -8,24 +8,9 @@ async function bootstrap(): Promise<void> {
   // ─── Global prefix ───────────────────────────────────────────────────────
   app.setGlobalPrefix("api");
 
-  // ─── URI versioning ──────────────────────────────────────────────────────
-  // Routes will be at /api/v1/...
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: "1",
-  });
-
-  // ─── Global validation pipe ──────────────────────────────────────────────
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
+  // ─── Global filters & interceptors ───────────────────────────────────────
+  app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   // ─── CORS ────────────────────────────────────────────────────────────────
   const corsOrigin = process.env["CORS_ORIGIN"] ?? "http://localhost:3000";
@@ -33,15 +18,21 @@ async function bootstrap(): Promise<void> {
     origin: corsOrigin.split(",").map((o) => o.trim()),
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "x-guest-token",
+      "x-event-id",
+    ],
   });
 
   // ─── Listen ──────────────────────────────────────────────────────────────
   const port = parseInt(process.env["PORT"] ?? "3001", 10);
   await app.listen(port);
 
-  console.log(`\n🚀 IWAI API running at http://localhost:${port}/api/v1`);
-  console.log(`   Health: http://localhost:${port}/api/v1/health\n`);
+  console.log(`\n🚀 IWAI API running at http://localhost:${port}/api`);
+  console.log(`   Health: http://localhost:${port}/api/health\n`);
 }
 
 bootstrap().catch((err: unknown) => {

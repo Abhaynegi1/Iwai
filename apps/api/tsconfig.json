@@ -5,9 +5,9 @@
     "rootDir": "./src",
     "baseUrl": "./",
     "paths": {
-      "@iwai/shared": ["../../packages/shared/src/index.ts"],
-      "@iwai/validation": ["../../packages/validation/src/index.ts"],
-      "@iwai/database": ["../../packages/database/src/index.ts"]
+      "@iwai/shared": ["../../packages/shared/dist/index.d.ts"],
+      "@iwai/validation": ["../../packages/validation/dist/index.d.ts"],
+      "@iwai/database": ["../../packages/database/dist/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],

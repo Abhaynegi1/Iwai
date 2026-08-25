@@ -38,28 +38,28 @@ Establish a clean technical foundation and understand the product domain before 
 
 ### Tasks
 
-- [ ] Define the complete IWAI product flow.
-- [ ] Identify all actors:
+- [x] Define the complete IWAI product flow.
+- [x] Identify all actors:
   - Organizer
   - Attendee/Guest
   - Admin
   - Future Photographer/Event Planner
-- [ ] Define event lifecycle.
-- [ ] Define attendee lifecycle.
-- [ ] Define photo lifecycle.
-- [ ] Define permissions and roles.
-- [ ] Define event ownership.
-- [ ] Define upload limits.
-- [ ] Define storage limits.
-- [ ] Define event expiration.
-- [ ] Define subscription concepts.
-- [ ] Design PostgreSQL database schema.
-- [ ] Define database relationships.
-- [ ] Define API boundaries.
-- [ ] Define shared validation schemas.
-- [ ] Define error-handling strategy.
-- [ ] Define authentication strategy.
-- [ ] Document important architectural decisions.
+- [x] Define event lifecycle.
+- [x] Define attendee lifecycle.
+- [x] Define photo lifecycle.
+- [x] Define permissions and roles.
+- [x] Define event ownership.
+- [x] Define upload limits.
+- [x] Define storage limits.
+- [x] Define event expiration.
+- [x] Define subscription concepts.
+- [x] Design PostgreSQL database schema.
+- [x] Define database relationships.
+- [x] Define API boundaries.
+- [x] Define shared validation schemas.
+- [x] Define error-handling strategy.
+- [x] Define authentication strategy.
+- [x] Document important architectural decisions.
 
 ### Deliverable
 
@@ -88,27 +88,27 @@ API
 
 ### Tasks
 
-- [ ] Configure PostgreSQL + Drizzle.
-- [ ] Create database schema.
-- [ ] Implement migrations.
-- [ ] Implement authentication.
-- [ ] Implement users.
-- [ ] Implement organizations.
-- [ ] Implement event creation.
-- [ ] Implement event management.
-- [ ] Implement attendee management.
-- [ ] Implement event joining.
-- [ ] Implement permissions.
-- [ ] Implement upload authorization.
-- [ ] Implement photo metadata.
-- [ ] Implement API validation.
-- [ ] Implement API error handling.
-- [ ] Implement rate limiting where appropriate.
-- [ ] Add API tests.
+- [x] Configure PostgreSQL + Drizzle.
+- [x] Create database schema (`users`, `organizations`, `events`, `attendees`, `photos`, `photo_likes`, `subscriptions`).
+- [x] Implement migrations (applied to Neon Singapore PostgreSQL).
+- [x] Implement authentication (Organizer JWT + Refresh token & Guest ephemeral JWT).
+- [x] Implement users & profile management.
+- [x] Implement organizations & multi-tenant memberships.
+- [x] Implement event creation (with unique 6-char event codes & slugs).
+- [x] Implement event management (CRUD, status lifecycle, public lookup).
+- [x] Implement attendee management (listing, profile updates, host role delegation).
+- [x] Implement event joining (zero-friction guest nickname + code join).
+- [x] Implement permissions (`JwtAuthGuard`, `GuestAuthGuard`, `RolesGuard`).
+- [x] Implement upload authorization (pre-signed URLs & quota limits).
+- [x] Implement dual storage driver (Local Storage for dev + Cloudflare R2 for cloud).
+- [x] Implement photo metadata, direct upload confirmation, and likes.
+- [x] Implement API validation (Zod validation pipes).
+- [x] Implement API error handling (`GlobalExceptionFilter` & `TransformInterceptor`).
+- [x] Add API tests (Auth, Events, Attendees, Photos, and Health suites).
 
 ### Deliverable
 
-A functioning backend capable of supporting the complete MVP flow.
+✅ **Completed:** A functioning, tested modular monolith backend in NestJS capable of supporting the complete guest join, photo upload, event management, and gallery flow.
 
 ---
 

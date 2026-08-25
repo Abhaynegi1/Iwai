@@ -3,9 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@iwai/shared": ["../../packages/shared/dist/index.d.ts"],
+      "@iwai/validation": ["../../packages/validation/dist/index.d.ts"],
+      "@iwai/api-client": ["../../packages/api-client/dist/index.d.ts"]
     },
     "isolatedModules": true
   },

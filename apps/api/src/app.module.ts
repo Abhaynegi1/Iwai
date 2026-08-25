@@ -1,29 +1,31 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { DatabaseModule } from "./database/database.module";
+import { AttendeesModule } from "./modules/attendees/attendees.module";
+import { AuthModule } from "./modules/auth/auth.module";
+import { EventsModule } from "./modules/events/events.module";
 import { HealthModule } from "./modules/health/health.module";
+import { OrganizationsModule } from "./modules/organizations/organizations.module";
+import { PhotosModule } from "./modules/photos/photos.module";
+import { StorageModule } from "./modules/storage/storage.module";
 
-/**
- * Root application module.
- *
- * Future modules to register here:
- *   - ConfigModule    (app configuration / env validation)
- *   - DatabaseModule  (Drizzle ORM connection)
- *   - AuthModule
- *   - UsersModule
- *   - OrganizationsModule
- *   - EventsModule
- *   - AttendeesModule
- *   - PhotosModule
- *   - UploadsModule
- *   - GalleriesModule
- *   - SubscriptionsModule
- *   - PaymentsModule
- *   - NotificationsModule
- *   - AdminModule
- */
 @Module({
-  imports: [HealthModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ["../../.env", ".env"],
+    }),
+    DatabaseModule,
+    StorageModule,
+    AuthModule,
+    OrganizationsModule,
+    EventsModule,
+    AttendeesModule,
+    PhotosModule,
+    HealthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
