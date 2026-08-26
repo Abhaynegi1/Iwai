@@ -1,14 +1,14 @@
 {
-  "extends": "../../packages/config/tsconfig/react-native.json",
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@iwai/shared": ["../../packages/shared/dist/index.d.ts"],
-      "@iwai/validation": ["../../packages/validation/dist/index.d.ts"],
-      "@iwai/api-client": ["../../packages/api-client/dist/index.d.ts"]
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
-  "exclude": ["node_modules"]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

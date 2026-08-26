@@ -21,7 +21,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@iwai/shared": "workspace:*"
+    "@iwai/shared": "workspace:*",
+    "@iwai/validation": "workspace:*"
   },
   "devDependencies": {
     "@iwai/config": "workspace:*",
