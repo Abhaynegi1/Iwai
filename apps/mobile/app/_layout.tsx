@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GuestSessionProvider } from "../src/context/GuestSessionContext";
 import { UploadQueueProvider } from "../src/context/UploadQueueContext";
+import { colors } from "../src/theme/colors";
 
 export default function RootLayout() {
   return (
@@ -12,7 +13,7 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: { backgroundColor: "#0f0d23" },
+              contentStyle: { backgroundColor: colors.background },
               animation: "slide_from_right",
             }}
           >
@@ -23,6 +24,7 @@ export default function RootLayout() {
                 headerShown: false,
                 presentation: "modal",
                 animation: "slide_from_bottom",
+                contentStyle: { backgroundColor: colors.darkBackground },
               }}
             />
             <Stack.Screen
@@ -31,6 +33,7 @@ export default function RootLayout() {
                 headerShown: false,
                 presentation: "fullScreenModal",
                 animation: "fade",
+                contentStyle: { backgroundColor: "#000" },
               }}
             />
             <Stack.Screen
@@ -42,7 +45,7 @@ export default function RootLayout() {
               }}
             />
           </Stack>
-          <StatusBar style="light" />
+          <StatusBar style="auto" />
         </UploadQueueProvider>
       </GuestSessionProvider>
     </SafeAreaProvider>

@@ -35,6 +35,7 @@ import {
 } from "lucide-react-native";
 import { useUploadQueue } from "../src/context/UploadQueueContext";
 import { colors } from "../src/theme/colors";
+import { radius } from "../src/theme/radius";
 import { typography } from "../src/theme/typography";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -130,25 +131,27 @@ export default function CameraScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
-        <CameraIcon size={48} color={colors.primary} style={{ marginBottom: 16 }} />
+        <View style={styles.permissionIconCircle}>
+          <CameraIcon size={36} color={colors.primary} />
+        </View>
         <Text style={styles.permissionTitle}>Camera Access Required</Text>
         <Text style={styles.permissionSubtitle}>
-          IWAI needs permission to use your camera so you can snap and share photos directly into the shared event gallery.
+          Iwai needs permission to use your camera so you can capture and share memories directly with everyone.
         </Text>
         <TouchableOpacity
           style={styles.permissionBtn}
           onPress={requestPermission}
-          activeOpacity={0.8}
+          activeOpacity={0.85}
         >
-          <Text style={styles.permissionBtnText}>Grant Camera Permission</Text>
+          <Text style={styles.permissionBtnText}>Grant Camera Access</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.permissionSecondaryBtn}
           onPress={handlePickFromGallery}
           activeOpacity={0.8}
         >
-          <ImageIcon size={18} color="#fff" />
-          <Text style={styles.permissionSecondaryBtnText}>Choose from Gallery instead</Text>
+          <ImageIcon size={18} color={colors.textPrimary} />
+          <Text style={styles.permissionSecondaryBtnText}>Choose from Gallery</Text>
         </TouchableOpacity>
       </View>
     );
@@ -175,10 +178,10 @@ export default function CameraScreen() {
               onPress={handleRetake}
               activeOpacity={0.7}
             >
-              <RotateCcw size={22} color="#fff" />
+              <RotateCcw size={20} color="#FFFDF8" />
             </TouchableOpacity>
             <View style={styles.previewBadge}>
-              <Sparkles size={14} color={colors.accentGreen} />
+              <Sparkles size={13} color={colors.accentMint} />
               <Text style={styles.previewBadgeText}>Ready to Share</Text>
             </View>
             <View style={{ width: 44 }} />
@@ -203,7 +206,7 @@ export default function CameraScreen() {
                 onPress={handleRetake}
                 activeOpacity={0.8}
               >
-                <RotateCcw size={18} color="#fff" />
+                <RotateCcw size={16} color="#FFFDF8" />
                 <Text style={styles.retakeBtnText}>Retake</Text>
               </TouchableOpacity>
 
@@ -211,13 +214,13 @@ export default function CameraScreen() {
                 style={styles.shareBtn}
                 onPress={handleSharePhoto}
                 disabled={isEnqueuing}
-                activeOpacity={0.8}
+                activeOpacity={0.85}
               >
                 {isEnqueuing ? (
-                  <ActivityIndicator size="small" color="#fff" />
+                  <ActivityIndicator size="small" color="#FFFDF8" />
                 ) : (
                   <>
-                    <Check size={18} color="#fff" />
+                    <Check size={18} color="#FFFDF8" />
                     <Text style={styles.shareBtnText}>Share to Gallery</Text>
                   </>
                 )}
@@ -246,7 +249,7 @@ export default function CameraScreen() {
           onPress={() => router.back()}
           activeOpacity={0.7}
         >
-          <ArrowLeft size={22} color="#fff" />
+          <ArrowLeft size={22} color="#FFFDF8" />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -255,25 +258,25 @@ export default function CameraScreen() {
           activeOpacity={0.7}
         >
           {flash === "on" ? (
-            <Zap size={22} color={colors.accentAmber} />
+            <Zap size={20} color={colors.accentApricot} />
           ) : (
-            <ZapOff size={22} color="#fff" />
+            <ZapOff size={20} color="#FFFDF8" />
           )}
         </TouchableOpacity>
       </View>
 
       {/* Bottom Shutter Controls */}
       <View style={styles.cameraBottomBar}>
-        {/* Gallery roll picker button */}
+        {/* Gallery roll picker */}
         <TouchableOpacity
           style={styles.bottomSideBtn}
           onPress={handlePickFromGallery}
           activeOpacity={0.7}
         >
-          <ImageIcon size={26} color="#fff" />
+          <ImageIcon size={24} color="#FFFDF8" />
         </TouchableOpacity>
 
-        {/* Shutter Button */}
+        {/* Center Shutter Button */}
         <TouchableOpacity
           style={styles.shutterOuterRing}
           onPress={handleTakePhoto}
@@ -283,13 +286,13 @@ export default function CameraScreen() {
           <View style={styles.shutterInnerCircle} />
         </TouchableOpacity>
 
-        {/* Flip camera button */}
+        {/* Flip camera */}
         <TouchableOpacity
           style={styles.bottomSideBtn}
           onPress={handleFlipCamera}
           activeOpacity={0.7}
         >
-          <FlipHorizontal size={26} color="#fff" />
+          <FlipHorizontal size={24} color="#FFFDF8" />
         </TouchableOpacity>
       </View>
     </View>
@@ -308,48 +311,57 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 32,
   },
+  permissionIconCircle: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
   permissionTitle: {
     ...typography.h2,
     color: colors.textPrimary,
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 8,
   },
   permissionSubtitle: {
     ...typography.body,
     color: colors.textSecondary,
     textAlign: "center",
-    marginBottom: 32,
+    marginBottom: 28,
     lineHeight: 22,
   },
   permissionBtn: {
     backgroundColor: colors.primary,
     paddingHorizontal: 28,
-    paddingVertical: 16,
-    borderRadius: 14,
+    paddingVertical: 14,
+    borderRadius: radius.button,
     width: "100%",
     alignItems: "center",
     marginBottom: 12,
   },
   permissionBtnText: {
     ...typography.button,
-    color: "#fff",
+    color: colors.surface,
   },
   permissionSecondaryBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
     paddingHorizontal: 28,
-    paddingVertical: 16,
-    borderRadius: 14,
+    paddingVertical: 14,
+    borderRadius: radius.button,
     width: "100%",
   },
   permissionSecondaryBtnText: {
     ...typography.button,
-    color: "#fff",
+    color: colors.textPrimary,
   },
   cameraTopBar: {
     position: "absolute",
@@ -362,17 +374,17 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   roundControlBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(0, 0, 0, 0.55)",
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "rgba(15, 23, 32, 0.6)",
     alignItems: "center",
     justifyContent: "center",
   },
   flashBtnActive: {
-    backgroundColor: "rgba(245, 158, 11, 0.25)",
+    backgroundColor: "rgba(255, 184, 108, 0.3)",
     borderWidth: 1,
-    borderColor: colors.accentAmber,
+    borderColor: colors.accentApricot,
   },
   cameraBottomBar: {
     position: "absolute",
@@ -386,28 +398,28 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   bottomSideBtn: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: "rgba(0, 0, 0, 0.55)",
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "rgba(15, 23, 32, 0.6)",
     alignItems: "center",
     justifyContent: "center",
   },
   shutterOuterRing: {
-    width: 82,
-    height: 82,
-    borderRadius: 41,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     borderWidth: 4,
-    borderColor: "#ffffff",
+    borderColor: "#FFFDF8",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent",
   },
   shutterInnerCircle: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
-    backgroundColor: "#ffffff",
+    width: 66,
+    height: 66,
+    borderRadius: 33,
+    backgroundColor: "#FFFDF8",
   },
   previewContainer: {
     flex: 1,
@@ -430,14 +442,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(0, 0, 0, 0.65)",
+    backgroundColor: "rgba(15, 23, 32, 0.7)",
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 20,
+    borderRadius: radius.full,
   },
   previewBadgeText: {
     ...typography.caption,
-    color: colors.accentGreen,
+    color: colors.accentMint,
     fontWeight: "700",
   },
   previewBottomBar: {
@@ -445,23 +457,23 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "rgba(15, 13, 35, 0.88)",
+    backgroundColor: "rgba(15, 23, 32, 0.88)",
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 40,
   },
   captionInputWrapper: {
-    backgroundColor: colors.card,
-    borderRadius: 14,
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderRadius: radius.button,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: "rgba(255, 255, 255, 0.2)",
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 16,
+    paddingVertical: 10,
+    marginBottom: 14,
   },
   captionInput: {
-    color: "#fff",
-    fontSize: 16,
+    color: "#FFFDF8",
+    fontSize: 15,
   },
   previewButtonRow: {
     flexDirection: "row",
@@ -472,27 +484,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 6,
     backgroundColor: "rgba(255, 255, 255, 0.15)",
     paddingVertical: 14,
-    borderRadius: 14,
+    borderRadius: radius.button,
   },
   retakeBtnText: {
     ...typography.button,
-    color: "#fff",
+    color: "#FFFDF8",
   },
   shareBtn: {
     flex: 2,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 6,
     backgroundColor: colors.primary,
     paddingVertical: 14,
-    borderRadius: 14,
+    borderRadius: radius.button,
   },
   shareBtnText: {
     ...typography.button,
-    color: "#fff",
+    color: "#FFFDF8",
   },
 });

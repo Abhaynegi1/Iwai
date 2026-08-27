@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Dimensions,
   Image,
   Modal,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Heart, Trash2, X } from "lucide-react-native";
+import { ArrowLeft, Heart, Share2, Trash2 } from "lucide-react-native";
 import type { PhotoEntity } from "@iwai/shared";
 import { useGuestSession } from "../context/GuestSessionContext";
 import { apiClient } from "../services/api";
 import { colors } from "../theme/colors";
+import { radius } from "../theme/radius";
 import { typography } from "../theme/typography";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -74,18 +77,42 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
     }
   };
 
-  const handleDelete = async () => {
-    if (isDeleting) return;
-    setIsDeleting(true);
-
+  const handleShare = async () => {
     try {
-      await apiClient.photos.delete(photo.id);
-      onPhotoDeleted?.(photo.id);
-      onClose();
+      await Share.share({
+        message: `Check out this memory from ${session?.event?.name || "our event"}: ${getImageUrl()}`,
+        url: getImageUrl(),
+      });
     } catch (err) {
-      console.error("Failed to delete photo:", err);
-      setIsDeleting(false);
+      console.error("Error sharing photo:", err);
     }
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete Photo",
+      "Are you sure you want to remove this photo from the event gallery?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            setIsDeleting(true);
+            try {
+              await apiClient.photos.delete(photo.id);
+              onPhotoDeleted?.(photo.id);
+              onClose();
+            } catch (err) {
+              console.error("Failed to delete photo:", err);
+              Alert.alert("Error", "Could not delete photo.");
+            } finally {
+              setIsDeleting(false);
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -99,47 +126,40 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
         {/* Top bar controls */}
         <View style={styles.topBar}>
           <TouchableOpacity
-            style={styles.controlBtn}
+            style={styles.roundBtn}
             onPress={onClose}
             activeOpacity={0.7}
           >
-            <X size={24} color="#fff" />
+            <ArrowLeft size={22} color="#FFFDF8" />
           </TouchableOpacity>
 
           <View style={styles.rightControls}>
+            <TouchableOpacity
+              style={styles.roundBtn}
+              onPress={handleShare}
+              activeOpacity={0.7}
+            >
+              <Share2 size={20} color="#FFFDF8" />
+            </TouchableOpacity>
+
             {canDelete && (
               <TouchableOpacity
-                style={[styles.controlBtn, styles.deleteBtn]}
+                style={[styles.roundBtn, styles.deleteBtn]}
                 onPress={handleDelete}
                 disabled={isDeleting}
                 activeOpacity={0.7}
               >
                 {isDeleting ? (
-                  <ActivityIndicator size="small" color="#fff" />
+                  <ActivityIndicator size="small" color="#FFFDF8" />
                 ) : (
                   <Trash2 size={20} color={colors.accentPink} />
                 )}
               </TouchableOpacity>
             )}
-
-            <TouchableOpacity
-              style={[styles.controlBtn, isLiked && styles.likedBtn]}
-              onPress={handleLike}
-              activeOpacity={0.7}
-            >
-              <Heart
-                size={22}
-                color={isLiked ? "#fff" : "#fff"}
-                fill={isLiked ? colors.accentPink : "transparent"}
-              />
-              {likesCount > 0 && (
-                <Text style={styles.likeCountText}>{likesCount}</Text>
-              )}
-            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Center full image */}
+        {/* Full Image */}
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: getImageUrl() }}
@@ -148,17 +168,33 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
           />
         </View>
 
-        {/* Bottom details card */}
-        {photo.caption || photo.uploadedAt ? (
-          <View style={styles.bottomSheet}>
-            {photo.caption ? (
-              <Text style={styles.captionText}>{photo.caption}</Text>
-            ) : null}
+        {/* Bottom Bar Details */}
+        <View style={styles.bottomBar}>
+          <View style={styles.bottomRow}>
+            <TouchableOpacity
+              style={[styles.likeActionBtn, isLiked && styles.likeActionBtnActive]}
+              onPress={handleLike}
+              activeOpacity={0.8}
+            >
+              <Heart
+                size={20}
+                color={isLiked ? "#fff" : "#FFFDF8"}
+                fill={isLiked ? colors.accentPink : "transparent"}
+              />
+              <Text style={styles.likeBtnText}>
+                {likesCount > 0 ? `${likesCount} Likes` : "Like"}
+              </Text>
+            </TouchableOpacity>
+
             <Text style={styles.timestampText}>
-              Shared on {new Date(photo.uploadedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              {new Date(photo.uploadedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
             </Text>
           </View>
-        ) : null}
+
+          {photo.caption ? (
+            <Text style={styles.captionText}>{photo.caption}</Text>
+          ) : null}
+        </View>
       </View>
     </Modal>
   );
@@ -167,13 +203,13 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.94)",
+    backgroundColor: "rgba(15, 23, 32, 0.95)",
     justifyContent: "space-between",
   },
   topBar: {
     paddingTop: 54,
-    paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -182,55 +218,67 @@ const styles = StyleSheet.create({
   rightControls: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 10,
   },
-  controlBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
+  roundBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
-    gap: 4,
   },
   deleteBtn: {
-    backgroundColor: "rgba(244, 63, 94, 0.18)",
-  },
-  likedBtn: {
-    backgroundColor: colors.accentPink,
-    paddingHorizontal: 12,
-    width: "auto",
-  },
-  likeCountText: {
-    ...typography.caption,
-    color: "#fff",
-    fontWeight: "700",
+    backgroundColor: "rgba(224, 83, 83, 0.2)",
   },
   imageContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.7,
+    height: SCREEN_HEIGHT * 0.72,
   },
   image: {
     width: SCREEN_WIDTH,
     height: "100%",
   },
-  bottomSheet: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+  bottomBar: {
+    paddingHorizontal: 20,
     paddingTop: 16,
-    backgroundColor: "rgba(15, 13, 35, 0.8)",
+    paddingBottom: 40,
+    backgroundColor: "rgba(15, 23, 32, 0.8)",
   },
-  captionText: {
-    ...typography.body,
+  bottomRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  likeActionBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: radius.full,
+  },
+  likeActionBtnActive: {
+    backgroundColor: colors.accentPink,
+  },
+  likeBtnText: {
+    ...typography.caption,
     color: "#fff",
-    marginBottom: 6,
+    fontWeight: "600",
   },
   timestampText: {
     ...typography.caption,
-    color: colors.textSecondary,
+    color: "rgba(255, 253, 248, 0.6)",
+  },
+  captionText: {
+    ...typography.body,
+    color: colors.surface,
+    marginTop: 4,
+    lineHeight: 20,
   },
 });

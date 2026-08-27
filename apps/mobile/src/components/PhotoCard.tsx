@@ -12,10 +12,11 @@ import { Heart } from "lucide-react-native";
 import type { PhotoEntity } from "@iwai/shared";
 import { apiClient } from "../services/api";
 import { colors } from "../theme/colors";
+import { radius } from "../theme/radius";
 import { typography } from "../theme/typography";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const COLUMN_WIDTH = (SCREEN_WIDTH - 32 - 12) / 2; // 2 column grid with padding & gap
+const COLUMN_WIDTH = (SCREEN_WIDTH - 32 - 10) / 2; // 2 column grid with padding & gap
 
 export interface PhotoCardProps {
   photo: PhotoEntity;
@@ -69,7 +70,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 
   return (
     <TouchableOpacity
-      activeOpacity={0.88}
+      activeOpacity={0.9}
       style={styles.card}
       onPress={() => onPress(photo)}
     >
@@ -93,12 +94,12 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
           onPress={handleLike}
         >
           <Heart
-            size={14}
-            color={isLiked ? "#fff" : colors.textSecondary}
+            size={13}
+            color={isLiked ? "#fff" : "rgba(255, 255, 255, 0.9)"}
             fill={isLiked ? colors.accentPink : "transparent"}
           />
           {likesCount > 0 && (
-            <Text style={[styles.likeCount, isLiked && styles.likeCountActive]}>
+            <Text style={styles.likeCount}>
               {likesCount}
             </Text>
           )}
@@ -108,7 +109,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
       {/* Caption footer if exists */}
       {photo.caption ? (
         <View style={styles.captionContainer}>
-          <Text style={styles.captionText} numberOfLines={2}>
+          <Text style={styles.captionText} numberOfLines={1}>
             {photo.caption}
           </Text>
         </View>
@@ -120,16 +121,16 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     width: COLUMN_WIDTH,
-    backgroundColor: colors.card,
-    borderRadius: 16,
+    backgroundColor: colors.surface,
+    borderRadius: radius.card,
     overflow: "hidden",
-    marginBottom: 12,
+    marginBottom: 10,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
   },
   imageContainer: {
     width: "100%",
-    height: COLUMN_WIDTH * 1.25, // 4:5 aspect ratio
+    height: COLUMN_WIDTH * 1.28, // Natural 3:4 photographic ratio
     backgroundColor: colors.backgroundSecondary,
     position: "relative",
   },
@@ -145,14 +146,14 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     position: "absolute",
-    bottom: 8,
-    right: 8,
+    bottom: 6,
+    right: 6,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.55)",
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 20,
+    backgroundColor: "rgba(15, 23, 32, 0.55)",
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+    borderRadius: radius.full,
     gap: 4,
   },
   likeButtonActive: {
@@ -160,19 +161,18 @@ const styles = StyleSheet.create({
   },
   likeCount: {
     ...typography.caption,
-    color: colors.textSecondary,
+    fontSize: 11,
+    color: "#fff",
     fontWeight: "700",
   },
-  likeCountActive: {
-    color: "#fff",
-  },
   captionContainer: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.02)",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    backgroundColor: colors.surface,
   },
   captionText: {
     ...typography.caption,
     color: colors.textPrimary,
-    lineHeight: 16,
+    fontSize: 11,
   },
 });

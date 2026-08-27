@@ -1,41 +1,64 @@
+/**
+ * Iwai Design System - Color Tokens
+ *
+ * Visual distribution:
+ * 70% Warm White / Ivory (#F7F7F5, #FFFDF8)
+ * 20% Deep Forest (#123C35)
+ * 7%  Emerald (#1E7A67)
+ * 3%  Mint / Apricot (#43D399, #FFB86C)
+ */
 export const colors = {
-  // Backgrounds
-  background: "#0f0d23",
-  backgroundSecondary: "#171438",
-  card: "rgba(255, 255, 255, 0.06)",
-  cardHover: "rgba(255, 255, 255, 0.10)",
-  cardSolid: "#1f1b4b",
-  modalOverlay: "rgba(0, 0, 0, 0.85)",
+  // Primary & Secondary Brand
+  primary: "#123C35", // Deep Forest
+  primaryHover: "#0D2E28",
+  primaryLight: "rgba(18, 60, 53, 0.08)",
+  primaryLighter: "rgba(18, 60, 53, 0.04)",
 
-  // Brand / Primaries
-  primary: "#5a5af7",
-  primaryHover: "#4949e0",
-  primaryLight: "rgba(90, 90, 247, 0.15)",
+  secondary: "#1E7A67", // Emerald
+  secondaryHover: "#186354",
+  secondaryLight: "rgba(30, 122, 103, 0.12)",
 
   // Accents
-  accentGreen: "#34d399",
-  accentGreenLight: "rgba(52, 211, 153, 0.15)",
-  accentPink: "#f43f5e",
-  accentPinkLight: "rgba(244, 63, 94, 0.15)",
-  accentAmber: "#f59e0b",
-  accentAmberLight: "rgba(245, 158, 11, 0.15)",
+  accentMint: "#43D399", // Mint
+  accentMintLight: "rgba(67, 211, 153, 0.18)",
+  accentApricot: "#FFB86C", // Apricot
+  accentApricotLight: "rgba(255, 184, 108, 0.18)",
+  accentPink: "#E05353",
+  accentPinkLight: "rgba(224, 83, 83, 0.12)",
+
+  // Backgrounds & Surfaces
+  background: "#F7F7F5", // Warm White
+  backgroundSecondary: "#EFEFEA",
+  surface: "#FFFDF8", // Ivory
+  surfaceElevated: "#FFFFFF",
+  card: "#FFFDF8",
+  cardHover: "#F9F6EE",
+  modalOverlay: "rgba(15, 23, 32, 0.65)",
+
+  // Dark Theme / Join Hero / Night Mode
+  darkBackground: "#123C35",
+  darkSurface: "#0E302A",
+  darkCard: "rgba(255, 253, 248, 0.08)",
+  darkBorder: "rgba(255, 253, 248, 0.14)",
 
   // Typography / Foregrounds
-  textPrimary: "#ffffff",
-  textSecondary: "#a5b4fc",
-  textMuted: "#6366f1",
-  textDisabled: "#4b5563",
+  textPrimary: "#0F1720", // Ink
+  textSecondary: "#68736F", // Slate
+  textMuted: "#9BA3A0",
+  textDisabled: "#B8BFBC",
+  textInverse: "#FFFDF8", // Ivory text for dark backgrounds
 
   // Borders & Dividers
-  border: "rgba(255, 255, 255, 0.12)",
-  borderLight: "rgba(255, 255, 255, 0.06)",
-  borderActive: "#5a5af7",
+  border: "#E5E7E2",
+  borderLight: "rgba(15, 23, 32, 0.06)",
+  borderActive: "#123C35",
+  borderDark: "rgba(255, 255, 255, 0.18)",
 
   // Feedback
-  error: "#ef4444",
-  success: "#10b981",
-  warning: "#f59e0b",
-  info: "#3b82f6",
+  error: "#E05353",
+  success: "#1E7A67",
+  warning: "#FFB86C",
+  info: "#1E7A67",
 } as const;
 
 export type Colors = typeof colors;

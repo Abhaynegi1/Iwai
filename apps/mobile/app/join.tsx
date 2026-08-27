@@ -11,11 +11,13 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { ArrowLeft, Camera, QrCode, Sparkles } from "lucide-react-native";
+import { ArrowLeft, QrCode } from "lucide-react-native";
 import { Button } from "../src/components/Button";
+import { EventCodeInput } from "../src/components/EventCodeInput";
 import { Input } from "../src/components/Input";
 import { useGuestSession } from "../src/context/GuestSessionContext";
 import { colors } from "../src/theme/colors";
+import { radius } from "../src/theme/radius";
 import { typography } from "../src/theme/typography";
 
 export default function JoinEventScreen() {
@@ -35,12 +37,12 @@ export default function JoinEventScreen() {
     const cleanNick = targetNick.trim();
 
     if (!cleanCode || cleanCode.length !== 6) {
-      setErrorMessage("Please enter a valid 6-character event code.");
+      setErrorMessage("Please enter a 6-character event code.");
       return;
     }
 
     if (!cleanNick) {
-      setErrorMessage("Please enter a display nickname.");
+      setErrorMessage("Please enter your display nickname.");
       return;
     }
 
@@ -56,7 +58,7 @@ export default function JoinEventScreen() {
       router.replace("/");
     } catch (err: unknown) {
       const msg =
-        err instanceof Error ? err.message : "Failed to join event. Please check code.";
+        err instanceof Error ? err.message : "Failed to join event. Please check the code.";
       setErrorMessage(msg);
     } finally {
       setIsJoining(false);
@@ -80,7 +82,6 @@ export default function JoinEventScreen() {
   const handleBarcodeScanned = ({ data }: { data: string }) => {
     setIsScanningQR(false);
 
-    // Extract event code from URL if it's a URL (e.g. iwai.app/join/ABC123 or https://.../join/ABC123)
     let extractedCode = data.trim().toUpperCase();
     const match = data.match(/\/join\/([A-Za-z0-9]{6})/i);
     if (match && match[1]) {
@@ -94,7 +95,7 @@ export default function JoinEventScreen() {
       } else {
         Alert.alert(
           "Event Code Found!",
-          `Code: ${extractedCode}. Please enter your nickname to complete joining.`,
+          `Code: ${extractedCode}. Please enter your nickname to continue.`,
         );
       }
     } else {
@@ -114,14 +115,14 @@ export default function JoinEventScreen() {
           onBarcodeScanned={handleBarcodeScanned}
         />
 
-        {/* Overlay frame */}
+        {/* Scanner Overlay */}
         <View style={styles.scannerOverlay}>
           <TouchableOpacity
             style={styles.closeScanBtn}
             onPress={() => setIsScanningQR(false)}
             activeOpacity={0.7}
           >
-            <ArrowLeft size={24} color="#fff" />
+            <ArrowLeft size={22} color={colors.surface} />
           </TouchableOpacity>
 
           <View style={styles.scanTargetFrame}>
@@ -145,6 +146,7 @@ export default function JoinEventScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         {/* Top Header */}
         <View style={styles.header}>
@@ -153,64 +155,58 @@ export default function JoinEventScreen() {
             onPress={() => router.back()}
             activeOpacity={0.7}
           >
-            <ArrowLeft size={22} color="#fff" />
+            <ArrowLeft size={22} color={colors.surface} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Join Event</Text>
-          <View style={{ width: 40 }} />
         </View>
 
-        {/* Hero Badge */}
-        <View style={styles.badgeContainer}>
-          <View style={styles.badge}>
-            <Sparkles size={16} color={colors.accentGreen} />
-            <Text style={styles.badgeText}>Instant Guest Access</Text>
-          </View>
+        {/* Title */}
+        <View style={styles.titleSection}>
+          <Text style={styles.title}>Join Event</Text>
+          <Text style={styles.subtitle}>
+            Scan the QR code to join the event
+          </Text>
         </View>
 
-        <Text style={styles.title}>Enter Event Details</Text>
-        <Text style={styles.subtitle}>
-          {"No account or password needed. Simply enter the 6-character code or scan the organizer's QR code."}
-        </Text>
-
-        {/* QR Scan Button */}
+        {/* QR Code Affordance Box */}
         <TouchableOpacity
           style={styles.qrCard}
           onPress={handleStartQRScan}
-          activeOpacity={0.8}
+          activeOpacity={0.88}
         >
-          <View style={styles.qrIconWrapper}>
-            <QrCode size={28} color={colors.primary} />
+          <View style={styles.qrScanFrame}>
+            <View style={[styles.cornerMint, styles.topLeftMint]} />
+            <View style={[styles.cornerMint, styles.topRightMint]} />
+            <View style={[styles.cornerMint, styles.bottomLeftMint]} />
+            <View style={[styles.cornerMint, styles.bottomRightMint]} />
+            <QrCode size={110} color={colors.surface} strokeWidth={1.5} />
           </View>
-          <View style={styles.qrTextWrapper}>
-            <Text style={styles.qrCardTitle}>Scan Event QR Code</Text>
-            <Text style={styles.qrCardSubtitle}>Scan with camera for instant join</Text>
-          </View>
+          <Text style={styles.tapToScanText}>Tap to open camera scanner</Text>
         </TouchableOpacity>
 
+        {/* Divider */}
         <View style={styles.dividerRow}>
           <View style={styles.divider} />
-          <Text style={styles.dividerText}>OR ENTER MANUALLY</Text>
+          <Text style={styles.dividerText}>Or enter event code</Text>
           <View style={styles.divider} />
         </View>
 
-        {/* Form Inputs */}
-        <Input
-          label="6-Character Event Code"
-          placeholder="e.g. WED202"
+        {/* Segmented 6-box Event Code input */}
+        <EventCodeInput
           value={eventCode}
-          onChangeText={(text) => setEventCode(text.toUpperCase())}
-          autoCapitalize="characters"
-          maxLength={6}
-          leftIcon={<Sparkles size={18} color={colors.textSecondary} />}
+          onChangeText={setEventCode}
+          length={6}
+          dark
         />
 
+        {/* Nickname input */}
         <Input
           label="Your Nickname"
-          placeholder="e.g. Alex M."
+          placeholder="e.g. Abhay Negi"
           value={nickname}
           onChangeText={setNickname}
           maxLength={40}
-          leftIcon={<Camera size={18} color={colors.textSecondary} />}
+          dark
+          containerStyle={{ marginTop: 8 }}
         />
 
         {errorMessage ? (
@@ -219,13 +215,14 @@ export default function JoinEventScreen() {
           </View>
         ) : null}
 
-        {/* Submit Button */}
+        {/* Continue Button */}
         <Button
-          title={isJoining ? "Joining..." : "Join Event & View Gallery"}
+          title={isJoining ? "Joining..." : "Continue"}
           onPress={() => handleJoin()}
           loading={isJoining}
           size="lg"
-          style={styles.submitBtn}
+          variant="secondary"
+          style={styles.continueBtn}
         />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -235,120 +232,129 @@ export default function JoinEventScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.darkBackground, // Deep Forest #123C35
   },
   scrollContent: {
     padding: 24,
     paddingTop: 54,
+    paddingBottom: 40,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 24,
+    marginBottom: 20,
   },
   backBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.card,
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: {
-    ...typography.h3,
-    color: colors.textPrimary,
-  },
-  badgeContainer: {
-    alignItems: "flex-start",
-    marginBottom: 12,
-  },
-  badge: {
-    flexDirection: "row",
+  titleSection: {
     alignItems: "center",
-    gap: 6,
-    backgroundColor: colors.accentGreenLight,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  badgeText: {
-    ...typography.caption,
-    color: colors.accentGreen,
-    fontWeight: "700",
+    marginBottom: 24,
   },
   title: {
-    ...typography.h2,
-    color: colors.textPrimary,
-    marginBottom: 8,
+    ...typography.h1,
+    color: colors.surface, // Ivory
+    fontSize: 28,
+    marginBottom: 6,
   },
   subtitle: {
     ...typography.body,
-    color: colors.textSecondary,
-    marginBottom: 24,
+    color: "rgba(255, 253, 248, 0.7)",
+    textAlign: "center",
   },
   qrCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: colors.borderActive,
-    marginBottom: 20,
-  },
-  qrIconWrapper: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: colors.primaryLight,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 14,
+    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    borderRadius: radius.container,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.12)",
+    padding: 28,
+    marginBottom: 20,
   },
-  qrTextWrapper: {
-    flex: 1,
+  qrScanFrame: {
+    width: 150,
+    height: 150,
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  qrCardTitle: {
-    ...typography.bodyBold,
-    color: colors.textPrimary,
+  cornerMint: {
+    position: "absolute",
+    width: 20,
+    height: 20,
+    borderColor: colors.accentMint,
   },
-  qrCardSubtitle: {
+  topLeftMint: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderTopLeftRadius: 8,
+  },
+  topRightMint: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 3,
+    borderRightWidth: 3,
+    borderTopRightRadius: 8,
+  },
+  bottomLeftMint: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 3,
+    borderLeftWidth: 3,
+    borderBottomLeftRadius: 8,
+  },
+  bottomRightMint: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 3,
+    borderRightWidth: 3,
+    borderBottomRightRadius: 8,
+  },
+  tapToScanText: {
     ...typography.caption,
-    color: colors.textSecondary,
-    marginTop: 2,
+    color: "rgba(255, 253, 248, 0.8)",
+    marginTop: 14,
+    fontWeight: "500",
   },
   dividerRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: 14,
   },
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: colors.border,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
   },
   dividerText: {
     ...typography.caption,
-    color: colors.textSecondary,
+    color: "rgba(255, 253, 248, 0.7)",
     paddingHorizontal: 12,
-    fontWeight: "600",
+    fontWeight: "500",
   },
   errorBox: {
     backgroundColor: colors.accentPinkLight,
     borderWidth: 1,
     borderColor: colors.accentPink,
     padding: 12,
-    borderRadius: 12,
-    marginBottom: 16,
+    borderRadius: radius.control,
+    marginVertical: 10,
   },
   errorBoxText: {
-    ...typography.subtext,
+    ...typography.caption,
     color: colors.accentPink,
-    fontWeight: "500",
+    fontWeight: "600",
   },
-  submitBtn: {
-    marginTop: 8,
+  continueBtn: {
+    marginTop: 14,
   },
   scannerContainer: {
     flex: 1,
@@ -380,7 +386,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 32,
     height: 32,
-    borderColor: colors.primary,
+    borderColor: colors.accentMint,
   },
   topLeft: {
     top: 0,

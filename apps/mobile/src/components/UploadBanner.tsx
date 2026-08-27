@@ -9,6 +9,7 @@ import {
 import { AlertCircle, CheckCircle2, RefreshCw, X } from "lucide-react-native";
 import { useUploadQueue } from "../context/UploadQueueContext";
 import { colors } from "../theme/colors";
+import { radius } from "../theme/radius";
 import { typography } from "../theme/typography";
 
 export const UploadBanner: React.FC = () => {
@@ -31,7 +32,7 @@ export const UploadBanner: React.FC = () => {
   if (failedUpload) {
     return (
       <View style={[styles.banner, styles.bannerFailed]}>
-        <AlertCircle size={20} color={colors.accentPink} style={styles.icon} />
+        <AlertCircle size={18} color={colors.accentPink} style={styles.icon} />
         <View style={styles.textContainer}>
           <Text style={styles.titleFailed}>Upload failed</Text>
           <Text style={styles.subtitle} numberOfLines={1}>
@@ -43,7 +44,7 @@ export const UploadBanner: React.FC = () => {
           onPress={() => retryUpload(failedUpload.id)}
           activeOpacity={0.7}
         >
-          <RefreshCw size={16} color="#fff" />
+          <RefreshCw size={14} color="#fff" />
           <Text style={styles.actionBtnText}>Retry</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -61,11 +62,11 @@ export const UploadBanner: React.FC = () => {
     const getStatusText = () => {
       switch (activeUpload.status) {
         case "compressing":
-          return "Optimizing photo...";
+          return "Optimizing memory...";
         case "requesting_url":
           return "Preparing upload...";
         case "uploading":
-          return "Uploading to gallery...";
+          return "Adding to shared gallery...";
         case "confirming":
           return "Finishing up...";
         default:
@@ -75,11 +76,11 @@ export const UploadBanner: React.FC = () => {
 
     return (
       <View style={[styles.banner, styles.bannerActive]}>
-        <ActivityIndicator size="small" color={colors.primary} style={styles.icon} />
+        <ActivityIndicator size="small" color={colors.secondary} style={styles.icon} />
         <View style={styles.textContainer}>
           <Text style={styles.title}>{getStatusText()}</Text>
           <Text style={styles.subtitle}>
-            {queue.length > 1 ? `${queue.length} items in queue` : "Please keep app open"}
+            {queue.length > 1 ? `${queue.length} items in queue` : "Sharing moments"}
           </Text>
         </View>
         <View style={styles.progressPill}>
@@ -92,10 +93,10 @@ export const UploadBanner: React.FC = () => {
   if (completedCount > 0) {
     return (
       <View style={[styles.banner, styles.bannerSuccess]}>
-        <CheckCircle2 size={20} color={colors.accentGreen} style={styles.icon} />
+        <CheckCircle2 size={18} color={colors.secondary} style={styles.icon} />
         <View style={styles.textContainer}>
           <Text style={styles.titleSuccess}>
-            {completedCount === 1 ? "1 photo added to gallery!" : `${completedCount} photos added!`}
+            {completedCount === 1 ? "Photo added to gallery!" : `${completedCount} photos added!`}
           </Text>
         </View>
         <TouchableOpacity
@@ -116,31 +117,31 @@ const styles = StyleSheet.create({
   banner: {
     marginHorizontal: 16,
     marginBottom: 12,
-    borderRadius: 14,
+    borderRadius: radius.card,
     paddingHorizontal: 14,
     paddingVertical: 10,
     flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: "#0F1720",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
   },
   bannerActive: {
-    backgroundColor: "#1e1b4b",
-    borderWidth: 1,
-    borderColor: colors.borderActive,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
   },
   bannerFailed: {
-    backgroundColor: "rgba(244, 63, 94, 0.15)",
-    borderWidth: 1,
+    backgroundColor: colors.accentPinkLight,
     borderColor: colors.accentPink,
   },
   bannerSuccess: {
-    backgroundColor: "rgba(52, 211, 153, 0.15)",
-    borderWidth: 1,
-    borderColor: colors.accentGreen,
+    backgroundColor: colors.secondaryLight,
+    borderColor: colors.secondary,
   },
   icon: {
     marginRight: 10,
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
   },
   titleSuccess: {
     ...typography.subtext,
-    color: colors.accentGreen,
+    color: colors.secondary,
     fontWeight: "600",
   },
   subtitle: {
@@ -169,14 +170,14 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   progressPill: {
-    backgroundColor: colors.primaryLight,
+    backgroundColor: colors.secondaryLight,
     paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
+    paddingVertical: 3,
+    borderRadius: radius.full,
   },
   progressText: {
     ...typography.caption,
-    color: colors.textSecondary,
+    color: colors.secondary,
     fontWeight: "700",
   },
   actionBtn: {
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accentPink,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 8,
+    borderRadius: radius.control,
     gap: 4,
     marginRight: 6,
   },

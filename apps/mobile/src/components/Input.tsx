@@ -12,6 +12,7 @@ import type {
   ViewStyle,
 } from "react-native";
 import { colors } from "../theme/colors";
+import { radius } from "../theme/radius";
 import { typography } from "../theme/typography";
 
 export interface InputProps extends TextInputProps {
@@ -22,6 +23,7 @@ export interface InputProps extends TextInputProps {
   rightIcon?: React.ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
+  dark?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -32,6 +34,7 @@ export const Input: React.FC<InputProps> = ({
   rightIcon,
   containerStyle,
   inputStyle,
+  dark = false,
   onFocus,
   onBlur,
   ...props
@@ -40,20 +43,29 @@ export const Input: React.FC<InputProps> = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && (
+        <Text style={[styles.label, dark && styles.labelDark]}>
+          {label}
+        </Text>
+      )}
 
       <View
         style={[
           styles.inputWrapper,
-          isFocused && styles.inputWrapperFocused,
+          dark && styles.inputWrapperDark,
+          isFocused && (dark ? styles.inputWrapperFocusedDark : styles.inputWrapperFocused),
           Boolean(error) && styles.inputWrapperError,
         ]}
       >
         {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
 
         <TextInput
-          placeholderTextColor={colors.textSecondary}
-          style={[styles.input, inputStyle]}
+          placeholderTextColor={dark ? "rgba(255, 253, 248, 0.45)" : colors.textSecondary}
+          style={[
+            styles.input,
+            dark && styles.inputDark,
+            inputStyle,
+          ]}
           onFocus={(e) => {
             setIsFocused(true);
             onFocus?.(e);
@@ -71,7 +83,7 @@ export const Input: React.FC<InputProps> = ({
       {error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : hint ? (
-        <Text style={styles.hintText}>{hint}</Text>
+        <Text style={[styles.hintText, dark && styles.hintTextDark]}>{hint}</Text>
       ) : null}
     </View>
   );
@@ -88,19 +100,30 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontWeight: "500",
   },
+  labelDark: {
+    color: "rgba(255, 253, 248, 0.8)",
+  },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.card,
-    borderRadius: 14,
+    backgroundColor: colors.surface, // Ivory
+    borderRadius: radius.button,
     borderWidth: 1,
     borderColor: colors.border,
     paddingHorizontal: 16,
-    minHeight: 52,
+    minHeight: 48,
+  },
+  inputWrapperDark: {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(255, 255, 255, 0.16)",
   },
   inputWrapperFocused: {
     borderColor: colors.primary,
-    backgroundColor: "rgba(90, 90, 247, 0.08)",
+    backgroundColor: colors.surface,
+  },
+  inputWrapperFocusedDark: {
+    borderColor: colors.accentMint,
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   inputWrapperError: {
     borderColor: colors.error,
@@ -108,8 +131,11 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: colors.textPrimary,
-    fontSize: 16,
-    paddingVertical: 12,
+    fontSize: 15,
+    paddingVertical: 10,
+  },
+  inputDark: {
+    color: colors.textInverse,
   },
   iconLeft: {
     marginRight: 10,
@@ -126,6 +152,8 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textSecondary,
     marginTop: 4,
-    opacity: 0.8,
+  },
+  hintTextDark: {
+    color: "rgba(255, 253, 248, 0.6)",
   },
 });

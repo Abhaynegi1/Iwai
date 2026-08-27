@@ -12,9 +12,10 @@ import type {
   ViewStyle,
 } from "react-native";
 import { colors } from "../theme/colors";
+import { radius } from "../theme/radius";
 import { typography } from "../theme/typography";
 
-export type ButtonVariant = "primary" | "secondary" | "danger" | "outline" | "ghost";
+export type ButtonVariant = "primary" | "secondary" | "danger" | "outline" | "ghost" | "dark";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps {
@@ -61,6 +62,9 @@ export const Button: React.FC<ButtonProps> = ({
       case "ghost":
         base.push(styles.ghost);
         break;
+      case "dark":
+        base.push(styles.dark);
+        break;
     }
 
     if (disabled || loading) {
@@ -76,14 +80,13 @@ export const Button: React.FC<ButtonProps> = ({
     switch (variant) {
       case "primary":
       case "danger":
-        base.push(styles.textWhite);
+      case "dark":
+        base.push(styles.textLight);
         break;
       case "secondary":
-        base.push(styles.textSecondary);
-        break;
       case "outline":
       case "ghost":
-        base.push(styles.textPrimaryBrand);
+        base.push(styles.textDark);
         break;
     }
 
@@ -94,18 +97,22 @@ export const Button: React.FC<ButtonProps> = ({
     return base;
   };
 
+  const getSpinnerColor = () => {
+    if (variant === "secondary" || variant === "outline" || variant === "ghost") {
+      return colors.primary;
+    }
+    return colors.surface;
+  };
+
   return (
     <TouchableOpacity
-      activeOpacity={0.75}
+      activeOpacity={0.82}
       onPress={onPress}
       disabled={disabled || loading}
       style={[getContainerStyle(), style]}
     >
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === "secondary" || variant === "outline" ? colors.primary : "#fff"}
-        />
+        <ActivityIndicator size="small" color={getSpinnerColor()} />
       ) : (
         <View style={styles.contentRow}>
           {icon && iconPosition === "left" && <View style={styles.iconLeft}>{icon}</View>}
@@ -119,7 +126,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: 14,
+    borderRadius: radius.button,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -142,20 +149,22 @@ const styles = StyleSheet.create({
   },
   md: {
     paddingHorizontal: 20,
-    paddingVertical: 14,
+    paddingVertical: 12,
     minHeight: 48,
   },
   lg: {
     paddingHorizontal: 24,
-    paddingVertical: 16,
-    minHeight: 56,
+    paddingVertical: 14,
+    minHeight: 52,
   },
   // Variants
   primary: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primary, // Deep Forest #123C35
+    borderWidth: 1,
+    borderColor: colors.primary,
   },
   secondary: {
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface, // Ivory #FFFDF8
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -170,28 +179,30 @@ const styles = StyleSheet.create({
   ghost: {
     backgroundColor: "transparent",
   },
+  dark: {
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+  },
   disabled: {
     opacity: 0.5,
   },
   // Text sizes
   text_sm: {
-    fontSize: 14,
+    fontSize: 13,
   },
   text_md: {
-    fontSize: 16,
+    fontSize: 15,
   },
   text_lg: {
-    fontSize: 18,
+    fontSize: 16,
   },
   // Text colors
-  textWhite: {
-    color: "#ffffff",
+  textLight: {
+    color: colors.surface, // Ivory text
   },
-  textSecondary: {
-    color: colors.textSecondary,
-  },
-  textPrimaryBrand: {
-    color: colors.primary,
+  textDark: {
+    color: colors.textPrimary, // Ink text
   },
   textDisabled: {
     color: colors.textDisabled,
