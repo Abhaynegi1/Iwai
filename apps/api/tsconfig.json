@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "noEmit": false,
     "baseUrl": "./",
     "paths": {
       "@iwai/shared": ["../../packages/shared/dist/index.d.ts"],

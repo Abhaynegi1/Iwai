@@ -4,7 +4,7 @@ import React, {
   useContext,
   useState,
 } from "react";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import type { PhotoEntity } from "@iwai/shared";
 import { apiClient } from "../services/api";
 import { optimizeImageForUpload } from "../services/imageOptimizer";
