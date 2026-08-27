@@ -142,19 +142,23 @@ Shared Gallery
 
 ### Tasks
 
-- [ ] Event joining.
-- [ ] QR scanning.
-- [ ] Camera interface.
-- [ ] Photo capture.
-- [ ] Photo preview.
-- [ ] Upload progress.
-- [ ] Upload retry.
-- [ ] Shared gallery.
-- [ ] Basic event information.
-- [ ] Basic attendee information.
-- [ ] Handle poor network conditions.
-- [ ] Local upload queue if required.
-- [ ] Basic analytics.
+- [x] Event joining (6-character code input & guest session persistence).
+- [x] QR scanning (live camera barcode scanner).
+- [x] Camera interface (custom viewfinder, front/back flip, flash toggle).
+- [x] Photo capture (native shutter capture & roll picker).
+- [x] Photo preview (instant preview modal with optional caption).
+- [x] Upload progress (floating live progress banner).
+- [x] Upload retry (resilient automatic & manual retry on network drops).
+- [x] Shared gallery (2-column live photo feed, likes counter, pull-to-refresh).
+- [x] Fullscreen Lightbox (high-res image modal with like and delete options).
+- [x] Basic event information (event details, photo limits, dates).
+- [x] Basic attendee information (guest & host roster).
+- [x] Handle poor network conditions (client-side JPEG optimization & compression).
+- [x] Local upload queue (in-memory background upload pipeline with states).
+
+### Deliverable
+
+✅ **Completed:** A lightweight, camera-first mobile MVP with zero-friction guest join, instant capture & compression, background upload queue, and interactive shared event gallery.
 
 ### Important
 
