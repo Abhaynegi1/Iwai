@@ -12,9 +12,8 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import {
-  Bell,
   Info,
-  Menu,
+  QrCode,
   Sparkles,
 } from "lucide-react-native";
 import type { EventEntity, PhotoEntity } from "@iwai/shared";
@@ -35,6 +34,7 @@ import { apiClient } from "../src/services/api";
 import { colors } from "../src/theme/colors";
 import { radius } from "../src/theme/radius";
 import { typography } from "../src/theme/typography";
+import { NicknamePromptModal } from "../src/components/NicknamePromptModal";
 
 // Featured demo events when browsing
 const SAMPLE_EVENTS: Array<EventEntity & {
@@ -112,7 +112,7 @@ type GalleryFilter = "all" | "recent" | "popular";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { session, isLoading: isSessionLoading } = useGuestSession();
+  const { session, guestNickname, setGuestNickname, isLoading: isSessionLoading } = useGuestSession();
   const { queue } = useUploadQueue();
 
   const [activeTab, setActiveTab] = useState<NavTab>("home");
@@ -126,6 +126,7 @@ export default function HomeScreen() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
   const [userEvents, setUserEvents] = useState(SAMPLE_EVENTS);
 
   // Fetch photos for the active event
@@ -221,74 +222,79 @@ export default function HomeScreen() {
     );
   }
 
-  // ─── Unauthenticated / Discovery Home ─────────────────────────────────────
+  // ─── Unauthenticated / Attendee Welcome Home ──────────────────────────────
   if (!session) {
+    const featuredCelebrationName = userEvents[0]?.name || "The Celebration";
+    const displayName = guestNickname || "Friend";
+
     return (
       <SafeAreaView style={styles.container}>
-        {/* Top Header Bar */}
-        <View style={styles.topBar}>
-          <TouchableOpacity
-            style={styles.topIconBtn}
-            onPress={() => setShowProfileModal(true)}
-            activeOpacity={0.7}
-          >
-            <Menu size={22} color={colors.textPrimary} />
-          </TouchableOpacity>
-
-          {/* iwai brandmark */}
+        {/* Minimal Clean Top Bar (No Burger, No Bell) */}
+        <View style={styles.minimalTopBar}>
           <View style={styles.brandContainer}>
             <Text style={styles.brandText}>iwai</Text>
-            <Sparkles size={13} color={colors.secondary} style={styles.brandSparkle} />
+            <Sparkles size={14} color={colors.secondary} style={styles.brandSparkle} />
           </View>
-
-          <TouchableOpacity
-            style={styles.topIconBtn}
-            onPress={() => setShowProfileModal(true)}
-            activeOpacity={0.7}
-          >
-            <Bell size={20} color={colors.textPrimary} />
-          </TouchableOpacity>
         </View>
 
         <ScrollView
           contentContainerStyle={styles.homeScrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Greeting */}
-          <Text style={styles.greetingText}>Hey, Abhay 👋</Text>
+          {/* Attendee Personalized Greeting */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setShowNicknameModal(true)}
+            style={styles.greetingBadge}
+          >
+            <Text style={styles.greetingText}>
+              Hey, {displayName} 👋
+            </Text>
+            <Text style={styles.editNickHint}>tap to edit</Text>
+          </TouchableOpacity>
 
-          {/* Editorial Headline */}
+          {/* Celebration Headline */}
           <Text style={styles.headline}>
-            Capture. Share.{"\n"}
-            <Text style={styles.headlineHighlight}>Relive.</Text>
+            Welcome to{"\n"}
+            <Text style={styles.headlineHighlight}>{featuredCelebrationName}</Text>
           </Text>
 
           {/* Subtitle */}
           <Text style={styles.subheadline}>
-            All your event memories in one beautiful place.
+            Your disposable photo companion. Capture moments together and relive them instantly.
           </Text>
 
-          {/* Action Row */}
-          <View style={styles.actionRow}>
-            <Button
-              title="+ Create Event"
-              onPress={() => setShowCreateModal(true)}
-              variant="primary"
-              style={styles.primaryActionBtn}
-            />
+          {/* Primary Join Event Hero Card */}
+          <View style={styles.joinHeroCard}>
+            <View style={styles.joinHeroHeader}>
+              <View style={styles.joinHeroIcon}>
+                <QrCode size={24} color={colors.primary} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.joinHeroTitle}>Join a Celebration</Text>
+                <Text style={styles.joinHeroSubtitle}>
+                  Scan QR code or enter event code to participate
+                </Text>
+              </View>
+            </View>
+
             <Button
               title="Join Event"
               onPress={() => router.push("/join")}
-              variant="secondary"
-              style={styles.secondaryActionBtn}
+              variant="primary"
+              size="lg"
+              style={styles.joinMainBtn}
             />
           </View>
 
-          {/* Your Events Section */}
+          {/* Featured Celebrations Section */}
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Your Events</Text>
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.viewAllText}>View all</Text>
+            <Text style={styles.sectionTitle}>Active Celebrations</Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => router.push("/join")}
+            >
+              <Text style={styles.viewAllText}>Join with code</Text>
             </TouchableOpacity>
           </View>
 
@@ -307,9 +313,9 @@ export default function HomeScreen() {
               <Sparkles size={18} color={colors.secondary} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.warmBannerTitle}>Memories bring us together.</Text>
+              <Text style={styles.warmBannerTitle}>Disposable by design.</Text>
               <Text style={styles.warmBannerSubtitle}>
-                Iwai helps you keep them close.
+                No account needed. Just your nickname and shared memories.
               </Text>
             </View>
           </View>
@@ -322,6 +328,16 @@ export default function HomeScreen() {
           onCameraPress={() => router.push("/camera")}
         />
 
+        {/* Nickname Prompt Modal on first launch / when requested */}
+        <NicknamePromptModal
+          visible={!guestNickname || showNicknameModal}
+          initialNickname={guestNickname}
+          onSave={(name) => {
+            setGuestNickname(name);
+            setShowNicknameModal(false);
+          }}
+        />
+
         {/* Modals */}
         <CreateEventModal
           visible={showCreateModal}
@@ -331,7 +347,7 @@ export default function HomeScreen() {
         <UploadModal
           visible={showUploadModal}
           onClose={() => setShowUploadModal(false)}
-          eventName="Selected Event"
+          eventName={featuredCelebrationName}
         />
         <ProfileModal
           visible={showProfileModal}
@@ -487,6 +503,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  minimalTopBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
+  },
   topBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -522,19 +546,39 @@ const styles = StyleSheet.create({
   },
   homeScrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 12,
     paddingBottom: 110,
+  },
+  greetingBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    backgroundColor: colors.surfaceWarm,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 10,
+    gap: 6,
   },
   greetingText: {
     ...typography.subtext,
-    color: colors.textSecondary,
-    marginBottom: 6,
-    fontWeight: "500",
+    color: colors.textPrimary,
+    fontWeight: "600",
+  },
+  editNickHint: {
+    ...typography.caption,
+    fontSize: 11,
+    color: colors.secondary,
+    textDecorationLine: "underline",
   },
   headline: {
     ...typography.h1,
     color: colors.textPrimary,
-    marginBottom: 6,
+    marginBottom: 8,
+    fontSize: 30,
+    lineHeight: 36,
   },
   headlineHighlight: {
     color: colors.secondary, // Emerald
@@ -543,6 +587,49 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.textSecondary,
     marginBottom: 20,
+    lineHeight: 22,
+  },
+  joinHeroCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.container,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 18,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  joinHeroHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 16,
+  },
+  joinHeroIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.surfaceWarm,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  joinHeroTitle: {
+    ...typography.bodyBold,
+    color: colors.textPrimary,
+    fontSize: 16,
+  },
+  joinHeroSubtitle: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  joinMainBtn: {
+    width: "100%",
   },
   actionRow: {
     flexDirection: "row",
@@ -579,7 +666,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     padding: 16,
-    marginTop: 8,
+    marginTop: 12,
     gap: 12,
   },
   warmBannerIcon: {

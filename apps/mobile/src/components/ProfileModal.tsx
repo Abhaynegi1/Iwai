@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Modal,
@@ -8,13 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { X } from "lucide-react-native";
+import { Pencil, X } from "lucide-react-native";
 import { useGuestSession } from "../context/GuestSessionContext";
 import { colors } from "../theme/colors";
 import { radius } from "../theme/radius";
 import { typography } from "../theme/typography";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
+import { NicknamePromptModal } from "./NicknamePromptModal";
 
 export interface ProfileModalProps {
   visible: boolean;
@@ -26,10 +27,24 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   visible,
   onClose,
 }) => {
-  const { session, leaveEvent } = useGuestSession();
+  const { session, guestNickname, setGuestNickname, updateProfile, leaveEvent } =
+    useGuestSession();
 
-  const nickname = session?.attendee?.nickname || "Abhay Negi";
-  const userHandle = `@${nickname.toLowerCase().replace(/\s+/g, "_")}`;
+  const [showEditNickname, setShowEditNickname] = useState(false);
+
+  const currentNickname = guestNickname || session?.attendee?.nickname || "Guest";
+
+  const handleSaveNickname = async (newNick: string) => {
+    await setGuestNickname(newNick);
+    if (session) {
+      try {
+        await updateProfile({ nickname: newNick });
+      } catch (err) {
+        console.error("Failed to update attendee profile on server:", err);
+      }
+    }
+    setShowEditNickname(false);
+  };
 
   const handleSignOut = () => {
     Alert.alert(
@@ -72,25 +87,37 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
           {/* Profile Card */}
           <View style={styles.profileHero}>
-            <Avatar name={nickname} size={72} />
-            <Text style={styles.profileName}>{nickname}</Text>
-            <Text style={styles.profileHandle}>{userHandle}</Text>
+            <Avatar name={currentNickname} size={72} />
+            
+            <View style={styles.nameRow}>
+              <Text style={styles.profileName}>{currentNickname}</Text>
+              <TouchableOpacity
+                style={styles.editBtn}
+                onPress={() => setShowEditNickname(true)}
+                activeOpacity={0.7}
+              >
+                <Pencil size={14} color={colors.secondary} />
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={styles.editNickBadge}
+              onPress={() => setShowEditNickname(true)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.editNickText}>Edit Nickname</Text>
+            </TouchableOpacity>
 
             {/* Stats Row */}
             <View style={styles.statsRow}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>8</Text>
-                <Text style={styles.statLabel}>Events</Text>
+                <Text style={styles.statNumber}>{session ? "1" : "0"}</Text>
+                <Text style={styles.statLabel}>Active Event</Text>
               </View>
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>356</Text>
-                <Text style={styles.statLabel}>Photos</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>12</Text>
-                <Text style={styles.statLabel}>Uploads</Text>
+                <Text style={styles.statNumber}>Disposable</Text>
+                <Text style={styles.statLabel}>Session</Text>
               </View>
             </View>
           </View>
@@ -122,6 +149,13 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             </Text>
           </View>
         </ScrollView>
+
+        {/* Edit Nickname Modal */}
+        <NicknamePromptModal
+          visible={showEditNickname}
+          initialNickname={currentNickname}
+          onSave={handleSaveNickname}
+        />
       </View>
     </Modal>
   );
@@ -168,13 +202,37 @@ const styles = StyleSheet.create({
   profileName: {
     ...typography.h3,
     color: colors.textPrimary,
+  },
+  nameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
     marginTop: 12,
   },
-  profileHandle: {
-    ...typography.subtext,
-    color: colors.textSecondary,
-    marginTop: 2,
+  editBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.surfaceWarm,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  editNickBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: radius.full,
+    backgroundColor: colors.secondaryLight,
+    marginTop: 6,
     marginBottom: 20,
+  },
+  editNickText: {
+    ...typography.caption,
+    fontSize: 12,
+    color: colors.secondary,
+    fontWeight: "600",
   },
   statsRow: {
     flexDirection: "row",

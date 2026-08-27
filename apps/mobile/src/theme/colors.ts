@@ -30,6 +30,7 @@ export const colors = {
   background: "#F7F7F5", // Warm White
   backgroundSecondary: "#EFEFEA",
   surface: "#FFFDF8", // Ivory
+  surfaceWarm: "#F4F3EE",
   surfaceElevated: "#FFFFFF",
   card: "#FFFDF8",
   cardHover: "#F9F6EE",

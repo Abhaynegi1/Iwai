@@ -11,9 +11,12 @@ import type { JoinEventByCodeInput, UpdateAttendeeProfileInput } from "@iwai/val
 import { apiClient, setGuestAuthToken } from "../services/api";
 
 const GUEST_SESSION_STORAGE_KEY = "@iwai_guest_session";
+const GUEST_NICKNAME_STORAGE_KEY = "@iwai_guest_nickname";
 
 export interface GuestSessionContextType {
   session: GuestSession | null;
+  guestNickname: string;
+  setGuestNickname: (name: string) => Promise<void>;
   isLoading: boolean;
   isAuthenticated: boolean;
   joinEvent: (input: JoinEventByCodeInput) => Promise<GuestSession>;
@@ -28,17 +31,27 @@ export const GuestSessionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [session, setSession] = useState<GuestSession | null>(null);
+  const [guestNickname, setGuestNicknameState] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Restore guest session on app startup
+  // Restore guest session and nickname on app startup
   useEffect(() => {
     async function loadStoredSession() {
       try {
-        const stored = await AsyncStorage.getItem(GUEST_SESSION_STORAGE_KEY);
-        if (stored) {
-          const parsedSession: GuestSession = JSON.parse(stored);
+        const [storedSession, storedNickname] = await Promise.all([
+          AsyncStorage.getItem(GUEST_SESSION_STORAGE_KEY),
+          AsyncStorage.getItem(GUEST_NICKNAME_STORAGE_KEY),
+        ]);
+
+        if (storedSession) {
+          const parsedSession: GuestSession = JSON.parse(storedSession);
           setSession(parsedSession);
           setGuestAuthToken(parsedSession.guestToken);
+          if (parsedSession.attendee?.nickname) {
+            setGuestNicknameState(parsedSession.attendee.nickname);
+          }
+        } else if (storedNickname) {
+          setGuestNicknameState(storedNickname);
         }
       } catch (err) {
         console.error("Failed to restore guest session from storage:", err);
@@ -50,6 +63,20 @@ export const GuestSessionProvider: React.FC<{ children: React.ReactNode }> = ({
     loadStoredSession();
   }, []);
 
+  const setGuestNickname = useCallback(async (name: string) => {
+    const trimmed = name.trim();
+    setGuestNicknameState(trimmed);
+    try {
+      if (trimmed) {
+        await AsyncStorage.setItem(GUEST_NICKNAME_STORAGE_KEY, trimmed);
+      } else {
+        await AsyncStorage.removeItem(GUEST_NICKNAME_STORAGE_KEY);
+      }
+    } catch (err) {
+      console.error("Failed to save nickname:", err);
+    }
+  }, []);
+
   // Join an event and store the session
   const joinEvent = useCallback(
     async (input: JoinEventByCodeInput): Promise<GuestSession> => {
@@ -58,12 +85,21 @@ export const GuestSessionProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setSession(newSession);
       setGuestAuthToken(newSession.guestToken);
+      if (newSession.attendee?.nickname) {
+        setGuestNicknameState(newSession.attendee.nickname);
+      }
 
       try {
-        await AsyncStorage.setItem(
-          GUEST_SESSION_STORAGE_KEY,
-          JSON.stringify(newSession),
-        );
+        await Promise.all([
+          AsyncStorage.setItem(
+            GUEST_SESSION_STORAGE_KEY,
+            JSON.stringify(newSession),
+          ),
+          AsyncStorage.setItem(
+            GUEST_NICKNAME_STORAGE_KEY,
+            newSession.attendee.nickname,
+          ),
+        ]);
       } catch (err) {
         console.error("Failed to persist guest session:", err);
       }
@@ -100,10 +136,20 @@ export const GuestSessionProvider: React.FC<{ children: React.ReactNode }> = ({
       };
 
       setSession(updatedSession);
-      await AsyncStorage.setItem(
-        GUEST_SESSION_STORAGE_KEY,
-        JSON.stringify(updatedSession),
-      );
+      if (updatedAttendee.nickname) {
+        setGuestNicknameState(updatedAttendee.nickname);
+      }
+
+      await Promise.all([
+        AsyncStorage.setItem(
+          GUEST_SESSION_STORAGE_KEY,
+          JSON.stringify(updatedSession),
+        ),
+        AsyncStorage.setItem(
+          GUEST_NICKNAME_STORAGE_KEY,
+          updatedAttendee.nickname,
+        ),
+      ]);
 
       return updatedAttendee;
     },
@@ -142,6 +188,8 @@ export const GuestSessionProvider: React.FC<{ children: React.ReactNode }> = ({
     <GuestSessionContext.Provider
       value={{
         session,
+        guestNickname,
+        setGuestNickname,
         isLoading,
         isAuthenticated: Boolean(session?.guestToken),
         joinEvent,

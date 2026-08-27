@@ -22,10 +22,10 @@ import { typography } from "../src/theme/typography";
 
 export default function JoinEventScreen() {
   const router = useRouter();
-  const { joinEvent } = useGuestSession();
+  const { joinEvent, guestNickname } = useGuestSession();
 
   const [eventCode, setEventCode] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState(guestNickname || "");
   const [isJoining, setIsJoining] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isScanningQR, setIsScanningQR] = useState(false);
