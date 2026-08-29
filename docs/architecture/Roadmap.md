@@ -202,31 +202,35 @@ Monitor Gallery
 
 ### Features
 
-- [ ] Authentication.
-- [ ] Organizer dashboard.
-- [ ] Event creation.
-- [ ] Event settings.
-- [ ] QR generation.
-- [ ] Attendee list.
-- [ ] Upload limits.
-- [ ] Photo moderation.
-- [ ] Delete photos.
-- [ ] Gallery management.
-- [ ] Event statistics.
-- [ ] Download/export.
-- [ ] Event status.
-- [ ] Event expiration settings.
+- [x] Authentication.
+- [x] Organizer dashboard.
+- [x] Event creation.
+- [x] Event settings.
+- [x] QR generation.
+- [x] Attendee list.
+- [x] Upload limits.
+- [x] Photo moderation.
+- [x] Delete photos.
+- [x] Gallery management.
+- [x] Event statistics.
+- [x] Download/export.
+- [x] Event status.
+- [x] Event expiration settings.
 
 ### Marketing website
 
-- [ ] Landing page.
-- [ ] Product explanation.
-- [ ] How it works.
-- [ ] Pricing.
-- [ ] FAQ.
-- [ ] Contact.
-- [ ] Login.
-- [ ] Signup.
+- [x] Landing page.
+- [x] Product explanation.
+- [x] How it works.
+- [x] Pricing.
+- [x] FAQ.
+- [x] Contact.
+- [x] Login.
+- [x] Signup.
+
+### Deliverable
+
+✅ **Completed:** A full-featured Next.js 15 Web Application & Organizer Dashboard with organizer authentication, session persistence, event creation wizard, high-resolution printable QR flyer kit, live gallery with photo moderation/deletion, guest roster role delegation, and a public-facing marketing website.
 
 ---
 

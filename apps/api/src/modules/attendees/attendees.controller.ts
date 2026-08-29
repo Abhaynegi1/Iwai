@@ -25,6 +25,7 @@ import { CurrentGuest } from "../../common/decorators/current-guest.decorator";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { GuestAuthGuard } from "../../common/guards/guest-auth.guard";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
+import { JwtOrGuestAuthGuard } from "../../common/guards/jwt-or-guest-auth.guard";
 import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe";
 import { AttendeesService } from "./attendees.service";
 
@@ -39,7 +40,7 @@ export class AttendeesController {
   }
 
   @Get("events/:eventId")
-  @UseGuards(GuestAuthGuard)
+  @UseGuards(JwtOrGuestAuthGuard)
   async getEventAttendees(@Param("eventId") eventId: string) {
     return this.attendeesService.getAttendeesForEvent(eventId);
   }

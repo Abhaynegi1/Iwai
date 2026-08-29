@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthProvider } from "../lib/auth-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,7 +24,9 @@ export default function RootLayout({
 }>): React.JSX.Element {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white antialiased">{children}</body>
+      <body className="min-h-screen bg-slate-950 text-slate-50 antialiased selection:bg-brand-500 selection:text-white">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

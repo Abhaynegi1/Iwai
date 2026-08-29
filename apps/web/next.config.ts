@@ -8,6 +8,20 @@ const nextConfig: NextConfig = {
   // Strict mode for catching potential issues early
   reactStrictMode: true,
 
+  // Remote image patterns for photo uploads and avatars
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
+
   // Security headers
   async headers() {
     return [

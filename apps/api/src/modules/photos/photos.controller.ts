@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
   UsePipes,
 } from "@nestjs/common";
@@ -27,6 +28,7 @@ import type {
 } from "@iwai/validation";
 import { CurrentGuest } from "../../common/decorators/current-guest.decorator";
 import { GuestAuthGuard } from "../../common/guards/guest-auth.guard";
+import { JwtOrGuestAuthGuard } from "../../common/guards/jwt-or-guest-auth.guard";
 import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe";
 import { PhotosService } from "./photos.service";
 
@@ -61,7 +63,7 @@ export class PhotosController {
   }
 
   @Get("events/:eventId/photos")
-  @UseGuards(GuestAuthGuard)
+  @UseGuards(JwtOrGuestAuthGuard)
   @UsePipes(new ZodValidationPipe(photoFilterSchema))
   async getEventPhotos(
     @Param("eventId") eventId: string,
@@ -71,7 +73,7 @@ export class PhotosController {
   }
 
   @Get("photos/:photoId")
-  @UseGuards(GuestAuthGuard)
+  @UseGuards(JwtOrGuestAuthGuard)
   async getPhotoById(@Param("photoId") photoId: string) {
     return this.photosService.getPhotoById(photoId);
   }
@@ -98,13 +100,21 @@ export class PhotosController {
   }
 
   @Delete("photos/:photoId")
-  @UseGuards(GuestAuthGuard)
+  @UseGuards(JwtOrGuestAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deletePhoto(
     @Param("photoId") photoId: string,
-    @CurrentGuest() guest: GuestJwtPayload,
+    @Req() req: any,
   ) {
-    const isHost = ["host", "co_host"].includes(guest.role);
-    return this.photosService.deletePhoto(photoId, guest.sub, isHost);
+    if (req.authType === "organizer") {
+      return this.photosService.deletePhoto(
+        photoId,
+        undefined,
+        false,
+        req.user.sub,
+      );
+    }
+    const isHost = ["host", "co_host"].includes(req.guest?.role);
+    return this.photosService.deletePhoto(photoId, req.guest?.sub, isHost);
   }
 }

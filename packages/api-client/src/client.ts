@@ -1,19 +1,27 @@
 import type { ApiClientConfig, RequestOptions } from "./types";
 import type {
   AttendeeEntity,
+  AttendeeRole,
+  AuthTokens,
   EventEntity,
   GuestSession,
   PaginatedResponse,
   PhotoEntity,
+  UserEntity,
   ApiResponse,
   ApiError,
 } from "@iwai/shared";
 import type {
   ConfirmUploadInput,
+  CreateEventInput,
   JoinEventByCodeInput,
+  LoginInput,
   PhotoFilterInput,
+  RefreshTokenInput,
+  RegisterInput,
   RequestUploadUrlInput,
   UpdateAttendeeProfileInput,
+  UpdateEventInput,
 } from "@iwai/validation";
 
 /**
@@ -76,16 +84,83 @@ export class IwaiApiClient {
   // ─── Resource Namespaces ──────────────────────────────────────────────────
 
   /**
+   * Organizer Authentication endpoints
+   */
+  public readonly auth = {
+    /** Register new organizer account */
+    register: (
+      input: RegisterInput,
+      options?: RequestOptions,
+    ): Promise<ApiResponse<{ user: UserEntity; tokens: AuthTokens }>> => {
+      return this.post<{ user: UserEntity; tokens: AuthTokens }>("/auth/register", input, options);
+    },
+    /** Log in organizer */
+    login: (
+      input: LoginInput,
+      options?: RequestOptions,
+    ): Promise<ApiResponse<{ user: UserEntity; tokens: AuthTokens }>> => {
+      return this.post<{ user: UserEntity; tokens: AuthTokens }>("/auth/login", input, options);
+    },
+    /** Refresh access token */
+    refreshToken: (
+      input: RefreshTokenInput,
+      options?: RequestOptions,
+    ): Promise<ApiResponse<AuthTokens>> => {
+      return this.post<AuthTokens>("/auth/refresh", input, options);
+    },
+    /** Get current organizer profile */
+    getMe: (options?: RequestOptions): Promise<ApiResponse<UserEntity>> => {
+      return this.get<UserEntity>("/auth/me", options);
+    },
+  };
+
+  /**
    * Event API endpoints
    */
   public readonly events = {
-    /** Lookup event by 6-char public code */
-    getByCode: (code: string, options?: RequestOptions): Promise<ApiResponse<EventEntity>> => {
-      return this.get<EventEntity>(`/events/code/${encodeURIComponent(code)}`, options);
+    /** Create a new event (Organizer) */
+    create: (input: CreateEventInput, options?: RequestOptions): Promise<ApiResponse<EventEntity>> => {
+      return this.post<EventEntity>("/events", input, options);
     },
-    /** Get event by ID */
-    getById: (id: string, options?: RequestOptions): Promise<ApiResponse<EventEntity>> => {
-      return this.get<EventEntity>(`/events/${encodeURIComponent(id)}`, options);
+    /** Get events created by current organizer */
+    getMyEvents: (
+      page = 1,
+      limit = 20,
+      options?: RequestOptions,
+    ): Promise<PaginatedResponse<EventEntity>> => {
+      return this.get<EventEntity[]>(
+        `/events?page=${page}&limit=${limit}`,
+        options,
+      ) as Promise<PaginatedResponse<EventEntity>>;
+    },
+    /** Lookup event by 6-char public code */
+    getByCode: (code: string, options?: RequestOptions): Promise<ApiResponse<Partial<EventEntity>>> => {
+      return this.get<Partial<EventEntity>>(`/events/code/${encodeURIComponent(code)}`, options);
+    },
+    /** Get event by ID (with stats) */
+    getById: (
+      id: string,
+      options?: RequestOptions,
+    ): Promise<
+      ApiResponse<
+        EventEntity & { stats?: { attendeeCount: number; photoCount: number } }
+      >
+    > => {
+      return this.get<
+        EventEntity & { stats?: { attendeeCount: number; photoCount: number } }
+      >(`/events/${encodeURIComponent(id)}`, options);
+    },
+    /** Update event settings */
+    update: (
+      id: string,
+      input: UpdateEventInput,
+      options?: RequestOptions,
+    ): Promise<ApiResponse<EventEntity>> => {
+      return this.patch<EventEntity>(`/events/${encodeURIComponent(id)}`, input, options);
+    },
+    /** Delete an event */
+    delete: (id: string, options?: RequestOptions): Promise<ApiResponse<void>> => {
+      return this.delete<void>(`/events/${encodeURIComponent(id)}`, options);
     },
   };
 
@@ -110,6 +185,19 @@ export class IwaiApiClient {
       options?: RequestOptions,
     ): Promise<ApiResponse<AttendeeEntity>> => {
       return this.patch<AttendeeEntity>("/attendees/me", input, options);
+    },
+    /** Update attendee role (Organizer) */
+    updateRole: (
+      eventId: string,
+      attendeeId: string,
+      role: AttendeeRole,
+      options?: RequestOptions,
+    ): Promise<ApiResponse<AttendeeEntity>> => {
+      return this.patch<AttendeeEntity>(
+        `/attendees/events/${encodeURIComponent(eventId)}/roles/${encodeURIComponent(attendeeId)}`,
+        { role },
+        options,
+      );
     },
   };
 

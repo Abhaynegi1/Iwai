@@ -304,8 +304,9 @@ export class PhotosService {
 
   async deletePhoto(
     photoId: string,
-    attendeeId: string,
-    isHost: boolean,
+    attendeeId?: string,
+    isHost?: boolean,
+    organizerUserId?: string,
   ): Promise<void> {
     const photo = await this.db.query.photos.findFirst({
       where: and(eq(photos.id, photoId), isNull(photos.deletedAt)),
@@ -315,8 +316,21 @@ export class PhotosService {
       throw new NotFoundException("Photo not found");
     }
 
-    if (photo.attendeeId !== attendeeId && !isHost) {
-      throw new ForbiddenException("Only the uploader or host can delete this photo");
+    if (organizerUserId) {
+      const event = await this.db.query.events.findFirst({
+        where: eq(events.id, photo.eventId),
+      });
+      if (!event || event.creatorId !== organizerUserId) {
+        throw new ForbiddenException(
+          "Only the event organizer or host can delete this photo",
+        );
+      }
+    } else {
+      if (photo.attendeeId !== attendeeId && !isHost) {
+        throw new ForbiddenException(
+          "Only the uploader or host can delete this photo",
+        );
+      }
     }
 
     await this.db
