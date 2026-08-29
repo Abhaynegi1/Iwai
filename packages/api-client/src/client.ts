@@ -348,15 +348,27 @@ export class IwaiApiClient {
       : controller.signal;
 
     try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          ...this.defaultHeaders,
-          ...options?.headers,
-        },
-        body: body !== undefined ? JSON.stringify(body) : undefined,
-        signal,
-      });
+      let response: Response;
+      try {
+        response = await fetch(url, {
+          method,
+          headers: {
+            ...this.defaultHeaders,
+            ...options?.headers,
+          },
+          body: body !== undefined ? JSON.stringify(body) : undefined,
+          signal,
+        });
+      } catch {
+        if (signal.aborted) {
+          throw new ApiClientError("Request was cancelled or timed out", "REQUEST_ABORTED", 0);
+        }
+        throw new ApiClientError(
+          `Unable to connect to API server at ${this.baseUrl}. Please ensure the backend is running.`,
+          "NETWORK_ERROR",
+          0,
+        );
+      }
 
       const json = (await response.json()) as ApiResponse<T> | ApiError;
 
