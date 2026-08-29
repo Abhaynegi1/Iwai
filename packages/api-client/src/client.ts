@@ -134,8 +134,8 @@ export class IwaiApiClient {
       ) as Promise<PaginatedResponse<EventEntity>>;
     },
     /** Lookup event by 6-char public code */
-    getByCode: (code: string, options?: RequestOptions): Promise<ApiResponse<Partial<EventEntity>>> => {
-      return this.get<Partial<EventEntity>>(`/events/code/${encodeURIComponent(code)}`, options);
+    getByCode: (code: string, options?: RequestOptions): Promise<ApiResponse<EventEntity>> => {
+      return this.get<EventEntity>(`/events/code/${encodeURIComponent(code)}`, options);
     },
     /** Get event by ID (with stats) */
     getById: (
