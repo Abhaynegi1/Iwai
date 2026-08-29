@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #090d16;
-  --foreground: #f8fafc;
+  --background: #F7F7F5;
+  --foreground: #0F1720;
 }
 
 *,
@@ -16,7 +16,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
@@ -28,18 +28,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbars */
+/* Custom scrollbars matching warm theme */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #F7F7F5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #D4D7CE;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #B8BFBC;
 }

@@ -32,30 +32,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col justify-center px-4 py-12 sm:px-6 lg:px-8 bg-slate-950">
+    <div className="flex min-h-screen flex-col justify-center px-4 py-12 sm:px-6 lg:px-8 bg-warm-100 relative overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-brand-600/20 blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-forest-light blur-[120px] pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <Link href="/" className="flex items-center justify-center gap-2 mb-6 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 shadow-lg shadow-brand-500/25 group-hover:scale-105 transition-transform duration-200">
-            <Camera className="h-6 w-6 text-white" />
+        <Link href="/" className="flex items-center justify-center gap-2.5 mb-6 group">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-forest shadow-sm group-hover:scale-105 transition-transform duration-200">
+            <Camera className="h-5 w-5 text-surface" />
           </div>
-          <span className="text-2xl font-bold tracking-tight text-white">IWAI</span>
+          <span className="text-2xl font-bold tracking-tight text-ink font-serif">IWAI</span>
         </Link>
-        <h2 className="text-center text-3xl font-extrabold tracking-tight text-white">
+        <h2 className="text-center text-3xl font-bold tracking-tight text-ink font-serif">
           Welcome back
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-400">
+        <p className="mt-2 text-center text-sm text-ink-secondary">
           Sign in to manage your events and live shared galleries
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl p-8 shadow-2xl">
+        <div className="rounded-3xl border border-warm-300 bg-surface p-8 shadow-[0_8px_30px_rgba(18,60,53,0.06)]">
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-400">
+              <div className="rounded-xl border border-coral/30 bg-coral/10 p-3 text-sm text-coral">
                 {error}
               </div>
             )}
@@ -94,11 +94,11 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 border-t border-slate-800/80 pt-6 text-center text-sm text-slate-400">
+          <div className="mt-6 border-t border-warm-300/80 pt-6 text-center text-sm text-ink-secondary">
             Don&apos;t have an organizer account?{" "}
             <Link
               href="/register"
-              className="font-medium text-brand-400 hover:text-brand-300 transition-colors"
+              className="font-medium text-forest hover:text-forest-hover underline underline-offset-2 transition-colors"
             >
               Create one now
             </Link>

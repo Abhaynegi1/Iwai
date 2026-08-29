@@ -80,34 +80,34 @@ export default function NewEventPage() {
       <div>
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-ink-secondary hover:text-ink transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Dashboard
         </Link>
       </div>
 
-      <div className="border-b border-slate-800 pb-5">
-        <h1 className="text-3xl font-extrabold tracking-tight text-white">
-          Create a New Event
+      <div className="border-b border-warm-300 pb-5">
+        <h1 className="text-3xl font-bold tracking-tight text-ink font-serif">
+          Create a New Celebration
         </h1>
-        <p className="mt-1 text-sm text-slate-400">
-          Configure your event details and photo limits. You will immediately receive a unique 6-character code and printable QR poster.
+        <p className="mt-1 text-sm text-ink-secondary">
+          Configure your event details and photo limits. You will immediately receive a unique 6-character code and printable QR flyer.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-400">
+        <div className="rounded-xl border border-coral/30 bg-coral/10 p-4 text-sm text-coral">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Core Event Details */}
-        <Card className="space-y-5">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Sparkles className="h-5 w-5 text-brand-400" />
-            <h2 className="text-base font-bold text-white">Event Information</h2>
+        <Card className="space-y-5 bg-surface">
+          <div className="flex items-center gap-2 border-b border-warm-300 pb-3">
+            <Sparkles className="h-5 w-5 text-forest" />
+            <h2 className="text-base font-bold text-ink font-serif">Event Information</h2>
           </div>
 
           <Input
@@ -119,7 +119,7 @@ export default function NewEventPage() {
           />
 
           <div className="w-full flex flex-col gap-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+            <label className="text-xs font-semibold uppercase tracking-wider text-ink-secondary">
               Description (Optional)
             </label>
             <textarea
@@ -127,7 +127,7 @@ export default function NewEventPage() {
               placeholder="A short note for your guests, welcome message, or event instructions..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-xl bg-slate-900/80 border border-slate-800 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition duration-150 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="w-full rounded-xl bg-surface border border-warm-300 px-3.5 py-2.5 text-sm text-ink placeholder-ink-muted transition duration-150 focus:border-forest focus:outline-none focus:ring-1 focus:ring-forest"
             />
           </div>
 
@@ -140,10 +140,10 @@ export default function NewEventPage() {
         </Card>
 
         {/* Schedule */}
-        <Card className="space-y-5">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Calendar className="h-5 w-5 text-indigo-400" />
-            <h2 className="text-base font-bold text-white">Date & Schedule</h2>
+        <Card className="space-y-5 bg-surface">
+          <div className="flex items-center gap-2 border-b border-warm-300 pb-3">
+            <Calendar className="h-5 w-5 text-emerald" />
+            <h2 className="text-base font-bold text-ink font-serif">Date & Schedule</h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -165,10 +165,10 @@ export default function NewEventPage() {
         </Card>
 
         {/* Quotas & Gallery Controls */}
-        <Card className="space-y-5">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Sliders className="h-5 w-5 text-amber-400" />
-            <h2 className="text-base font-bold text-white">Photo Quotas & Controls</h2>
+        <Card className="space-y-5 bg-surface">
+          <div className="flex items-center gap-2 border-b border-warm-300 pb-3">
+            <Sliders className="h-5 w-5 text-[#B86B14]" />
+            <h2 className="text-base font-bold text-ink font-serif">Photo Quotas & Controls</h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -194,19 +194,19 @@ export default function NewEventPage() {
             />
           </div>
 
-          <div className="pt-3 border-t border-slate-800/80 space-y-4">
+          <div className="pt-3 border-t border-warm-300 space-y-4">
             <label className="flex items-start gap-3 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={isGuestUploadEnabled}
                 onChange={(e) => setIsGuestUploadEnabled(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-brand-500 focus:ring-brand-500"
+                className="mt-1 h-4 w-4 rounded border-warm-300 text-forest focus:ring-forest"
               />
               <div>
-                <p className="text-sm font-medium text-white">
+                <p className="text-sm font-medium text-ink">
                   Allow Guest Uploads
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-ink-secondary">
                   Guests with the QR code or link can immediately upload photos from their devices.
                 </p>
               </div>
@@ -217,13 +217,13 @@ export default function NewEventPage() {
                 type="checkbox"
                 checked={isPublicGallery}
                 onChange={(e) => setIsPublicGallery(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-brand-500 focus:ring-brand-500"
+                className="mt-1 h-4 w-4 rounded border-warm-300 text-forest focus:ring-forest"
               />
               <div>
-                <p className="text-sm font-medium text-white">
+                <p className="text-sm font-medium text-ink">
                   Shared Public Gallery
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-ink-secondary">
                   Guests can view the live gallery feed and relive memories uploaded by others.
                 </p>
               </div>

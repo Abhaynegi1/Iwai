@@ -15,18 +15,18 @@ export function Navbar() {
   if (isAuthPage) return null;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/75 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-warm-300 bg-warm-100/90 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform duration-200">
-            <Camera className="h-5 w-5 text-white" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-forest shadow-sm group-hover:scale-105 transition-transform duration-200">
+            <Camera className="h-5 w-5 text-surface" />
           </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-bold tracking-tight text-white">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-xl font-bold tracking-tight text-ink font-serif">
               IWAI
             </span>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-brand-400">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-emerald">
               PRO
             </span>
           </div>
@@ -34,28 +34,28 @@ export function Navbar() {
 
         {/* Center Nav (marketing) */}
         {!pathname?.startsWith("/dashboard") && !pathname?.startsWith("/events") && (
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-ink-secondary">
             <Link
               href="#how-it-works"
-              className="hover:text-white transition-colors"
+              className="hover:text-ink transition-colors"
             >
               How It Works
             </Link>
             <Link
               href="#features"
-              className="hover:text-white transition-colors"
+              className="hover:text-ink transition-colors"
             >
               Features
             </Link>
             <Link
               href="#pricing"
-              className="hover:text-white transition-colors"
+              className="hover:text-ink transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="#faq"
-              className="hover:text-white transition-colors"
+              className="hover:text-ink transition-colors"
             >
               FAQ
             </Link>
@@ -78,14 +78,14 @@ export function Navbar() {
                   Dashboard
                 </Button>
               </Link>
-              <div className="flex items-center gap-2 border-l border-slate-800 pl-3">
-                <span className="text-xs text-slate-400 hidden lg:inline-block">
+              <div className="flex items-center gap-2 border-l border-warm-300 pl-3">
+                <span className="text-xs font-medium text-ink-secondary hidden lg:inline-block">
                   {user.name}
                 </span>
                 <button
                   onClick={logout}
                   title="Log out"
-                  className="rounded-lg p-2 text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-colors"
+                  className="rounded-lg p-2 text-ink-muted hover:bg-warm-200 hover:text-ink transition-colors"
                 >
                   <LogOut className="h-4 w-4" />
                 </button>

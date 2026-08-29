@@ -3,20 +3,30 @@ import { cn } from "../../lib/utils";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   hoverable?: boolean;
+  variant?: "ivory" | "forest" | "warm";
 }
 
 export function Card({
   className,
   children,
   hoverable = false,
+  variant = "ivory",
   ...props
 }: CardProps) {
+  const variantStyles = {
+    ivory: "bg-surface border-warm-300 text-ink shadow-[0_2px_8px_rgba(15,23,32,0.04)]",
+    forest: "bg-forest border-forest-dark text-surface shadow-[0_4px_16px_rgba(18,60,53,0.15)]",
+    warm: "bg-surface-warm border-warm-300 text-ink",
+  };
+
   return (
     <div
       className={cn(
-        "rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md p-6 text-slate-100 shadow-xl",
+        "rounded-2xl border p-6 transition-all duration-200",
+        variantStyles[variant],
         hoverable &&
-          "transition-all duration-200 hover:border-slate-700 hover:bg-slate-900/80 hover:shadow-2xl hover:shadow-brand-500/5",
+          variant === "ivory" &&
+          "hover:border-warm-400 hover:shadow-[0_6px_20px_rgba(15,23,32,0.07)] hover:-translate-y-0.5",
         className,
       )}
       {...props}

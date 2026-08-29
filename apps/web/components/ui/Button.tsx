@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "emerald";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
 }
@@ -25,22 +25,27 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-xl";
 
     const variantStyles = {
+      // Primary: Deep Forest
       primary:
-        "bg-brand-500 hover:bg-brand-600 text-white shadow-lg shadow-brand-500/25 border border-brand-400/20 focus:ring-brand-500 focus:ring-offset-slate-950 active:scale-[0.98]",
+        "bg-forest hover:bg-forest-hover text-surface shadow-sm hover:shadow focus:ring-forest focus:ring-offset-warm-100 active:scale-[0.98]",
+      // Emerald
+      emerald:
+        "bg-emerald hover:bg-emerald-hover text-white shadow-sm hover:shadow focus:ring-emerald focus:ring-offset-warm-100 active:scale-[0.98]",
+      // Secondary: Ivory card button
       secondary:
-        "bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 focus:ring-slate-400 focus:ring-offset-slate-950 active:scale-[0.98]",
+        "bg-surface hover:bg-surface-warm text-ink border border-warm-300 shadow-sm focus:ring-forest focus:ring-offset-warm-100 active:scale-[0.98]",
       outline:
-        "border border-slate-700 hover:border-slate-500 bg-transparent text-slate-200 hover:bg-slate-800/50 focus:ring-slate-400 focus:ring-offset-slate-950",
+        "border border-warm-300 hover:border-warm-400 bg-transparent text-ink hover:bg-warm-200 focus:ring-forest focus:ring-offset-warm-100",
       ghost:
-        "bg-transparent text-slate-300 hover:text-white hover:bg-slate-800/60 focus:ring-slate-400 focus:ring-offset-slate-950",
+        "bg-transparent text-ink-secondary hover:text-ink hover:bg-warm-200/80 focus:ring-forest focus:ring-offset-warm-100",
       danger:
-        "bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/25 border border-rose-500/20 focus:ring-rose-500 focus:ring-offset-slate-950 active:scale-[0.98]",
+        "bg-coral hover:bg-rose-700 text-white shadow-sm focus:ring-coral focus:ring-offset-warm-100 active:scale-[0.98]",
     };
 
     const sizeStyles = {
-      sm: "text-xs px-3 py-1.5 gap-1.5",
-      md: "text-sm px-4 py-2.5 gap-2",
-      lg: "text-base px-6 py-3.5 gap-2.5",
+      sm: "text-xs px-3.5 py-1.5 gap-1.5 rounded-lg",
+      md: "text-sm px-4 py-2.5 gap-2 rounded-xl",
+      lg: "text-base px-6 py-3 gap-2.5 rounded-xl font-semibold",
     };
 
     return (
