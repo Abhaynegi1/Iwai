@@ -488,8 +488,11 @@ export default function EventWorkspacePage({ params }: PageProps) {
                     >
                       <img
                         src={
+                          (photo as PhotoEntity & { publicUrl?: string; thumbnailUrl?: string })
+                            .thumbnailUrl ||
                           (photo as PhotoEntity & { publicUrl?: string })
-                            .publicUrl || "/placeholder.png"
+                            .publicUrl ||
+                          "/placeholder.png"
                         }
                         alt={photo.caption || "Guest upload"}
                         className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
@@ -595,6 +598,8 @@ export default function EventWorkspacePage({ params }: PageProps) {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
               {photos.map((photo) => {
                 const photoUrl =
+                  (photo as PhotoEntity & { publicUrl?: string; thumbnailUrl?: string })
+                    .thumbnailUrl ||
                   (photo as PhotoEntity & { publicUrl?: string }).publicUrl ||
                   "";
                 const uploadTime = new Date(photo.uploadedAt).toLocaleTimeString([], {

@@ -49,6 +49,19 @@ export class LocalStorageService implements IStorageService {
     return fs.existsSync(filePath);
   }
 
+  async getObject(key: string): Promise<Buffer> {
+    const filePath = path.join(this.storageDir, key);
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`Storage object not found: ${key}`);
+    }
+    return fs.promises.readFile(filePath);
+  }
+
+  async putObject(key: string, buffer: Buffer, _contentType: string): Promise<void> {
+    await this.saveLocalFile(key, buffer);
+  }
+
+
   /**
    * Internal method for writing local file buffer
    */

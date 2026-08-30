@@ -24,4 +24,15 @@ export interface IStorageService {
    * Check if an object exists in storage
    */
   objectExists(key: string): Promise<boolean>;
+
+  /**
+   * Fetch an object's raw buffer from storage (for processing/thumbnails)
+   */
+  getObject(key: string): Promise<Buffer>;
+
+  /**
+   * Upload an object directly with buffer (for generated thumbnails/previews)
+   */
+  putObject(key: string, buffer: Buffer, contentType: string): Promise<void>;
 }
+

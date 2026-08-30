@@ -13,6 +13,7 @@ import {
   UseGuards,
   UsePipes,
 } from "@nestjs/common";
+import type { Request } from "express";
 import type { GuestJwtPayload } from "@iwai/shared";
 import {
   confirmUploadSchema,
@@ -104,9 +105,14 @@ export class PhotosController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deletePhoto(
     @Param("photoId") photoId: string,
-    @Req() req: any,
+    @Req()
+    req: Request & {
+      authType?: string;
+      user?: { sub: string };
+      guest?: { sub: string; role: string };
+    },
   ) {
-    if (req.authType === "organizer") {
+    if (req.authType === "organizer" && req.user) {
       return this.photosService.deletePhoto(
         photoId,
         undefined,
@@ -114,7 +120,8 @@ export class PhotosController {
         req.user.sub,
       );
     }
-    const isHost = ["host", "co_host"].includes(req.guest?.role);
+    const role = req.guest?.role;
+    const isHost = role ? ["host", "co_host"].includes(role) : false;
     return this.photosService.deletePhoto(photoId, req.guest?.sub, isHost);
   }
 }

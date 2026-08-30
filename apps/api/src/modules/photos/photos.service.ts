@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
@@ -27,12 +28,16 @@ import type {
 import { DRIZZLE_DB } from "../../database/database.module";
 import { STORAGE_SERVICE } from "../storage/storage.interface";
 import type { IStorageService } from "../storage/storage.interface";
+import { PhotoProcessorService } from "./photo-processor.service";
 
 @Injectable()
 export class PhotosService {
+  private readonly logger = new Logger(PhotosService.name);
+
   constructor(
     @Inject(DRIZZLE_DB) private db: Database,
     @Inject(STORAGE_SERVICE) private storageService: IStorageService,
+    private photoProcessor: PhotoProcessorService,
   ) {}
 
   async requestUploadUrl(
@@ -126,7 +131,13 @@ export class PhotosService {
     photoId: string,
     attendeeId: string,
     input: ConfirmUploadInput,
-  ): Promise<PhotoEntity & { publicUrl: string }> {
+  ): Promise<
+    PhotoEntity & {
+      publicUrl: string;
+      thumbnailUrl: string;
+      previewUrl: string;
+    }
+  > {
     const photo = await this.db.query.photos.findFirst({
       where: eq(photos.id, photoId),
     });
@@ -139,12 +150,36 @@ export class PhotosService {
       throw new ForbiddenException("Only the uploader can confirm this photo");
     }
 
+    // Process photo to generate responsive WebP thumbnail, preview, and extract dimensions
+    let thumbnailKey: string | null = null;
+    let previewKey: string | null = null;
+    let width = input.width || null;
+    let height = input.height || null;
+
+    try {
+      const processed = await this.photoProcessor.processPhoto(
+        photo.storageKey,
+        photo.eventId,
+        photo.id,
+      );
+      thumbnailKey = processed.thumbnailKey;
+      previewKey = processed.previewKey;
+      width = processed.width || width;
+      height = processed.height || height;
+    } catch (procErr: unknown) {
+      this.logger.warn(
+        `Failed to generate thumbnail/preview for photo ${photoId}, fallback to original: ${(procErr as Error).message}`,
+      );
+    }
+
     const [updated] = await this.db
       .update(photos)
       .set({
         status: "ready",
-        ...(input.width ? { width: input.width } : {}),
-        ...(input.height ? { height: input.height } : {}),
+        ...(thumbnailKey ? { thumbnailKey } : {}),
+        ...(previewKey ? { previewKey } : {}),
+        ...(width ? { width } : {}),
+        ...(height ? { height } : {}),
         ...(input.blurhash ? { blurhash: input.blurhash } : {}),
         ...(input.caption ? { caption: input.caption } : {}),
         uploadedAt: new Date(),
@@ -158,7 +193,15 @@ export class PhotosService {
   async getEventPhotos(
     eventId: string,
     filters: PhotoFilterInput,
-  ): Promise<PaginatedResponse<PhotoEntity & { publicUrl: string }>> {
+  ): Promise<
+    PaginatedResponse<
+      PhotoEntity & {
+        publicUrl: string;
+        thumbnailUrl: string;
+        previewUrl: string;
+      }
+    >
+  > {
     const page = Number(filters.page) || 1;
     const limit = Number(filters.limit) || 20;
     const offset = (page - 1) * limit;
@@ -208,7 +251,14 @@ export class PhotosService {
 
   async getPhotoById(
     photoId: string,
-  ): Promise<PhotoEntity & { publicUrl: string; likeCount: number }> {
+  ): Promise<
+    PhotoEntity & {
+      publicUrl: string;
+      thumbnailUrl: string;
+      previewUrl: string;
+      likeCount: number;
+    }
+  > {
     const photo = await this.db.query.photos.findFirst({
       where: and(eq(photos.id, photoId), isNull(photos.deletedAt)),
       with: {
@@ -236,7 +286,13 @@ export class PhotosService {
     attendeeId: string,
     isHost: boolean,
     input: UpdatePhotoInput,
-  ): Promise<PhotoEntity & { publicUrl: string }> {
+  ): Promise<
+    PhotoEntity & {
+      publicUrl: string;
+      thumbnailUrl: string;
+      previewUrl: string;
+    }
+  > {
     const photo = await this.db.query.photos.findFirst({
       where: and(eq(photos.id, photoId), isNull(photos.deletedAt)),
     });
@@ -342,7 +398,19 @@ export class PhotosService {
       .where(eq(photos.id, photoId));
   }
 
-  private toEntityWithUrls(photo: Photo): PhotoEntity & { publicUrl: string } {
+  private toEntityWithUrls(photo: Photo): PhotoEntity & {
+    publicUrl: string;
+    thumbnailUrl: string;
+    previewUrl: string;
+  } {
+    const publicUrl = this.storageService.getPublicUrl(photo.storageKey);
+    const thumbnailUrl = photo.thumbnailKey
+      ? this.storageService.getPublicUrl(photo.thumbnailKey)
+      : publicUrl;
+    const previewUrl = photo.previewKey
+      ? this.storageService.getPublicUrl(photo.previewKey)
+      : publicUrl;
+
     return {
       id: photo.id,
       eventId: photo.eventId,
@@ -362,7 +430,9 @@ export class PhotosService {
       takenAt: photo.takenAt ? photo.takenAt.toISOString() : null,
       uploadedAt: photo.uploadedAt.toISOString(),
       deletedAt: photo.deletedAt ? photo.deletedAt.toISOString() : null,
-      publicUrl: this.storageService.getPublicUrl(photo.storageKey),
+      publicUrl,
+      thumbnailUrl,
+      previewUrl,
     };
   }
 }

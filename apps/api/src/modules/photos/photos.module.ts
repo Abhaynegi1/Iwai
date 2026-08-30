@@ -1,13 +1,15 @@
 import { Module } from "@nestjs/common";
 import { AuthModule } from "../auth/auth.module";
 import { StorageModule } from "../storage/storage.module";
+import { PhotoProcessorService } from "./photo-processor.service";
+import { PhotoCleanupCron } from "./photo-cleanup.cron";
 import { PhotosController } from "./photos.controller";
 import { PhotosService } from "./photos.service";
 
 @Module({
   imports: [AuthModule, StorageModule],
   controllers: [PhotosController],
-  providers: [PhotosService],
-  exports: [PhotosService],
+  providers: [PhotosService, PhotoProcessorService, PhotoCleanupCron],
+  exports: [PhotosService, PhotoProcessorService],
 })
 export class PhotosModule {}

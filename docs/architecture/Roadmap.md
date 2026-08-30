@@ -284,19 +284,22 @@ createdAt
 
 ### Tasks
 
-- [ ] Signed upload URLs.
-- [ ] Direct client → storage uploads.
-- [ ] Upload validation.
-- [ ] File size limits.
-- [ ] File type validation.
-- [ ] Image metadata.
-- [ ] Thumbnail generation.
-- [ ] Image optimization.
-- [ ] Background processing.
-- [ ] CDN delivery.
-- [ ] Failed upload handling.
-- [ ] Storage cleanup.
-- [ ] Event expiration cleanup.
+- [x] Signed upload URLs.
+- [x] Direct client → storage uploads.
+- [x] Upload validation.
+- [x] File size limits.
+- [x] File type validation.
+- [x] Image metadata (intrinsic width, height, mime type).
+- [x] Thumbnail generation (responsive 400px WebP via `sharp`).
+- [x] Image optimization (1600px WebP previews via `sharp`).
+- [x] Storage drivers (LocalStorageService + R2StorageService parity with getObject/putObject).
+- [x] Background processing & cleanup (`PhotoCleanupCron` scheduled via `@nestjs/schedule`).
+- [x] Failed upload handling & storage cleanup (purging abandoned `pending_upload` files).
+- [x] Event expiration cleanup (daily cron updating status to `expired`).
+
+### Deliverable
+
+✅ **Completed:** A robust, automated photo processing and optimization infrastructure with `sharp`-powered WebP thumbnail and preview generation, intrinsic dimension extraction, dual local/R2 storage driver parity, and scheduled cron jobs for abandoned upload and event expiration cleanups.
 
 ---
 

@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { PhotosService } from "./photos.service";
 import { DRIZZLE_DB } from "../../database/database.module";
 import { STORAGE_SERVICE } from "../storage/storage.interface";
+import { PhotoProcessorService } from "./photo-processor.service";
 
 describe("PhotosService", () => {
   let service: PhotosService;
@@ -18,7 +19,13 @@ describe("PhotosService", () => {
     select: jest.fn().mockReturnThis(),
     from: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnValue([{ count: 0 }]),
-    update: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnValue({
+      set: jest.fn().mockReturnValue({
+        where: jest.fn().mockReturnValue({
+          returning: jest.fn().mockResolvedValue([]),
+        }),
+      }),
+    }),
     set: jest.fn().mockReturnThis(),
     delete: jest.fn().mockReturnThis(),
   };
@@ -32,6 +39,18 @@ describe("PhotosService", () => {
       .mockReturnValue("https://cdn.example.com/photos/abc.jpg"),
     deleteObject: jest.fn().mockResolvedValue(undefined),
     objectExists: jest.fn().mockResolvedValue(true),
+    getObject: jest.fn().mockResolvedValue(Buffer.from("dummy-image-data")),
+    putObject: jest.fn().mockResolvedValue(undefined),
+  };
+
+  const mockPhotoProcessor = {
+    processPhoto: jest.fn().mockResolvedValue({
+      thumbnailKey: "events/event-123/photos/photo-123-thumb.webp",
+      previewKey: "events/event-123/photos/photo-123-preview.webp",
+      width: 1920,
+      height: 1080,
+      fileSizeBytes: 2048000,
+    }),
   };
 
   beforeEach(async () => {
@@ -40,6 +59,7 @@ describe("PhotosService", () => {
         PhotosService,
         { provide: DRIZZLE_DB, useValue: mockDb },
         { provide: STORAGE_SERVICE, useValue: mockStorageService },
+        { provide: PhotoProcessorService, useValue: mockPhotoProcessor },
       ],
     }).compile();
 
@@ -75,5 +95,48 @@ describe("PhotosService", () => {
     expect(result).toHaveProperty("photoId");
     expect(result.uploadUrl).toBe("https://storage.example.com/presigned-put");
     expect(result.storageKey).toContain("events/event-123/photos/");
+  });
+
+  it("should confirm upload, process thumbnail, and return image URLs", async () => {
+    const mockPhoto = {
+      id: "photo-123",
+      eventId: "event-123",
+      attendeeId: "att-123",
+      storageKey: "events/event-123/photos/photo-123.jpg",
+      originalFilename: "photo.jpg",
+      mimeType: "image/jpeg",
+      fileSizeBytes: 2048000,
+      status: "pending_upload",
+      isFavorite: false,
+      uploadedAt: new Date(),
+    };
+
+    mockDb.query.photos.findFirst.mockResolvedValueOnce(mockPhoto);
+    (mockDb.update as jest.Mock).mockReturnValueOnce({
+      set: jest.fn().mockReturnValueOnce({
+        where: jest.fn().mockReturnValueOnce({
+          returning: jest.fn().mockResolvedValueOnce([
+            {
+              ...mockPhoto,
+              status: "ready",
+              thumbnailKey: "events/event-123/photos/photo-123-thumb.webp",
+              previewKey: "events/event-123/photos/photo-123-preview.webp",
+              width: 1920,
+              height: 1080,
+            },
+          ]),
+        }),
+      }),
+    });
+
+    const result = await service.confirmUpload("photo-123", "att-123", {
+      photoId: "photo-123",
+      storageKey: "events/event-123/photos/photo-123.jpg",
+    });
+
+    expect(result.status).toBe("ready");
+    expect(result).toHaveProperty("thumbnailUrl");
+    expect(result).toHaveProperty("previewUrl");
+    expect(result).toHaveProperty("publicUrl");
   });
 });
