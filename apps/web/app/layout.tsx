@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Newsreader } from "next/font/google";
+import { Plus_Jakarta_Sans, Newsreader, Caveat } from "next/font/google";
 import { AuthProvider } from "../lib/auth-context";
 import "./globals.css";
 
@@ -14,6 +14,13 @@ const serif = Newsreader({
   variable: "--font-serif",
   style: ["normal", "italic"],
   display: "swap",
+});
+
+const handwriting = Caveat({
+  subsets: ["latin"],
+  variable: "--font-handwriting",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -37,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.JSX.Element {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+    <html lang="en" className={`${sans.variable} ${serif.variable} ${handwriting.variable}`}>
       <body className="min-h-screen bg-warm-100 font-sans text-ink antialiased selection:bg-forest selection:text-white">
         <AuthProvider>{children}</AuthProvider>
       </body>

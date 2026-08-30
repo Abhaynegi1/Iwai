@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Camera,
-  Sparkles,
   QrCode,
   Smartphone,
   ShieldCheck,
@@ -10,7 +10,6 @@ import {
   Users,
   DownloadCloud,
   CheckCircle2,
-  ArrowRight,
   Heart,
 } from "lucide-react";
 import { Navbar } from "../components/layout/Navbar";
@@ -31,101 +30,111 @@ export default function HomePage(): React.JSX.Element {
       <Navbar />
 
       {/* ─── Hero Section ────────────────────────────────────────── */}
-      <section className="relative pt-16 pb-20 sm:pt-24 sm:pb-28 overflow-hidden">
-        {/* Warm ambient background aura */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[500px] w-[900px] rounded-full bg-gradient-to-b from-brand-100/60 via-apricot-light to-transparent blur-[120px] pointer-events-none" />
+      <section className="relative pt-10 pb-20 sm:pt-16 sm:pb-24 overflow-hidden">
+        {/* Soft warm paper ambient background */}
+        <div className="absolute top-0 left-1/3 -translate-x-1/2 h-[550px] w-[800px] rounded-full bg-gradient-to-b from-brand-100/50 via-warm-200/30 to-transparent blur-[140px] pointer-events-none" />
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          {/* Subtitle Pill */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-forest/15 bg-surface px-4 py-1.5 text-xs font-semibold text-forest shadow-sm mb-6">
-            <Sparkles className="h-3.5 w-3.5 text-emerald" />
-            <span>The Shared Event Album — Zero App Download Required</span>
-          </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            
+            {/* Left Column: Memory Scribble Headline & CTAs */}
+            <div className="lg:col-span-6 xl:col-span-5 space-y-7 text-left">
+              {/* Emotional Handwritten Script Headline */}
+              <div className="space-y-1">
+                <h1 className="font-handwriting text-5xl sm:text-6xl lg:text-7xl font-bold text-forest leading-[1.08] tracking-tight">
+                  Every moment.
+                  <span className="block relative mt-1 sm:mt-2">
+                    Shared beautifully.
+                    {/* Organic hand-drawn scribble brush underline */}
+                    <svg
+                      className="absolute -bottom-2 sm:-bottom-3 left-0 w-full max-w-[280px] sm:max-w-[340px] text-forest/70 overflow-visible"
+                      viewBox="0 0 280 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2.5 10C55 4 125 2.5 277 9"
+                        stroke="currentColor"
+                        strokeWidth="3.2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
+                </h1>
+              </div>
 
-          {/* Editorial Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-ink max-w-4xl mx-auto leading-[1.12] font-serif">
-            Every guest&apos;s perspective.{" "}
-            <span className="italic font-normal text-forest">
-              One shared album.
-            </span>
-          </h1>
+              {/* Editorial modern paragraph */}
+              <p className="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans max-w-md">
+                Iwai is a simple way to collect and share photos from the moments that matter.
+              </p>
 
-          <p className="mt-6 text-lg sm:text-xl text-ink-secondary max-w-2xl mx-auto leading-relaxed font-sans">
-            Never chase photos after the party again. Guests scan a table QR code with their camera, snap photos instantly, and everyone relives the memories together.
-          </p>
+              {/* Action Buttons styled as organic pill shapes */}
+              <div className="flex flex-wrap items-center gap-3.5 pt-1">
+                <Link href="/register">
+                  <Button className="rounded-2xl px-7 py-3.5 bg-forest hover:bg-forest-hover text-surface font-medium text-sm shadow-[0_4px_16px_rgba(18,60,53,0.18)] transition-all">
+                    Create Event
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="secondary" className="rounded-2xl px-7 py-3.5 bg-surface/90 border border-warm-400/90 hover:bg-warm-200 text-ink font-medium text-sm transition-all">
+                    Join Event
+                  </Button>
+                </Link>
+              </div>
 
-          {/* Hero CTAs */}
-          <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-            <Link href="/register">
-              <Button size="lg" variant="primary" className="w-full sm:w-auto shadow-md">
-                <Sparkles className="h-4 w-4" />
-                Create Your Event Free
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                Organizer Dashboard
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+              {/* Subtle Trust Indicators */}
+              <div className="pt-2 flex flex-wrap items-center gap-5 text-xs font-medium text-ink-secondary">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald" />
+                  No app download required
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald" />
+                  Instant table QR flyers
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald" />
+                  Private host moderation
+                </span>
+              </div>
+            </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-ink-secondary">
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald" />
-              No app store install required
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald" />
-              Instant printable table QR flyer
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald" />
-              Full host moderation & privacy
-            </span>
-          </div>
-
-          {/* Hero Interactive Showcase Card */}
-          <div className="mt-14 mx-auto max-w-5xl rounded-3xl border border-warm-300 bg-surface p-4 sm:p-6 shadow-[0_12px_40px_rgba(18,60,53,0.06)]">
-            <div className="rounded-2xl border border-warm-300/80 bg-warm-50 p-6 sm:p-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-                {/* Step 1 */}
-                <div className="flex flex-col p-5 rounded-2xl bg-surface border border-warm-300 shadow-sm">
-                  <div className="h-10 w-10 rounded-xl bg-forest/10 flex items-center justify-center text-forest mb-4">
-                    <QrCode className="h-5 w-5" />
-                  </div>
-                  <Badge variant="brand" className="w-fit mb-2">Step 1</Badge>
-                  <h3 className="font-bold text-ink text-base">Display Table QR</h3>
-                  <p className="text-xs text-ink-secondary mt-1.5 leading-relaxed">
-                    Place printable cards on dining tables or display on the venue welcome screen.
-                  </p>
+            {/* Right Column: Warm Visual Photograph */}
+            <div className="lg:col-span-6 xl:col-span-7">
+              <div className="relative mx-auto max-w-2xl">
+                {/* Visual Frame */}
+                <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(18,60,53,0.14)] border border-warm-300/80 bg-warm-200 group">
+                  <Image
+                    src="/hero-moment.jpg"
+                    alt="Celebration moment captured on camera"
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 55vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                  {/* Subtle warm vignette */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-forest/25 via-transparent to-transparent pointer-events-none" />
                 </div>
 
-                {/* Step 2 */}
-                <div className="flex flex-col p-5 rounded-2xl bg-surface border border-warm-300 shadow-sm">
-                  <div className="h-10 w-10 rounded-xl bg-emerald/10 flex items-center justify-center text-emerald mb-4">
-                    <Smartphone className="h-5 w-5" />
+                {/* Hand-written organic polaroid tag / scribble detail */}
+                <div className="absolute -bottom-4 -left-3 sm:-left-6 rounded-2xl bg-surface/95 backdrop-blur-md border border-warm-300 px-4 py-2.5 shadow-lg flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    <div className="h-7 w-7 rounded-full bg-forest/20 border-2 border-surface flex items-center justify-center text-[10px] font-bold text-forest">A</div>
+                    <div className="h-7 w-7 rounded-full bg-emerald/20 border-2 border-surface flex items-center justify-center text-[10px] font-bold text-emerald">M</div>
+                    <div className="h-7 w-7 rounded-full bg-apricot/30 border-2 border-surface flex items-center justify-center text-[10px] font-bold text-ink">J</div>
                   </div>
-                  <Badge variant="emerald" className="w-fit mb-2">Step 2</Badge>
-                  <h3 className="font-bold text-ink text-base">Guests Snap Moments</h3>
-                  <p className="text-xs text-ink-secondary mt-1.5 leading-relaxed">
-                    Guests point their phone camera, enter a nickname, and snap candid party shots.
-                  </p>
-                </div>
-
-                {/* Step 3 */}
-                <div className="flex flex-col p-5 rounded-2xl bg-surface border border-warm-300 shadow-sm">
-                  <div className="h-10 w-10 rounded-xl bg-mint/20 flex items-center justify-center text-emerald-hover mb-4">
-                    <Camera className="h-5 w-5" />
+                  <div>
+                    <span className="font-handwriting text-lg font-bold text-forest block leading-none">
+                      candid celebration memories
+                    </span>
+                    <span className="text-[11px] text-ink-secondary font-sans">
+                      128 guest perspectives live
+                    </span>
                   </div>
-                  <Badge variant="mint" className="w-fit mb-2">Step 3</Badge>
-                  <h3 className="font-bold text-ink text-base">Relive Together</h3>
-                  <p className="text-xs text-ink-secondary mt-1.5 leading-relaxed">
-                    Every perspective flows into one shared high-res gallery everyone can browse.
-                  </p>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -137,6 +146,9 @@ export default function HomePage(): React.JSX.Element {
             <Badge variant="brand">DESIGNED FOR REAL CELEBRATIONS</Badge>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-ink font-serif">
               Simple, Private, and Effortless
+              <span className="font-handwriting text-forest text-2xl font-bold block sm:inline sm:ml-2">
+                — as easy as scanning a menu
+              </span>
             </h2>
             <p className="text-sm text-ink-secondary">
               IWAI was crafted specifically so your non-tech guests can participate in seconds.
@@ -145,8 +157,8 @@ export default function HomePage(): React.JSX.Element {
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card hoverable className="relative overflow-hidden bg-surface">
-              <div className="font-serif text-6xl font-bold text-warm-300/80 absolute -right-1 -top-1 select-none">
-                01
+              <div className="font-handwriting text-5xl font-bold text-forest/20 absolute right-4 top-3 select-none">
+                #01
               </div>
               <div className="h-12 w-12 rounded-2xl bg-forest/10 text-forest flex items-center justify-center mb-4">
                 <QrCode className="h-6 w-6" />
@@ -158,8 +170,8 @@ export default function HomePage(): React.JSX.Element {
             </Card>
 
             <Card hoverable className="relative overflow-hidden bg-surface">
-              <div className="font-serif text-6xl font-bold text-warm-300/80 absolute -right-1 -top-1 select-none">
-                02
+              <div className="font-handwriting text-5xl font-bold text-forest/20 absolute right-4 top-3 select-none">
+                #02
               </div>
               <div className="h-12 w-12 rounded-2xl bg-emerald/10 text-emerald flex items-center justify-center mb-4">
                 <Zap className="h-6 w-6" />
@@ -171,8 +183,8 @@ export default function HomePage(): React.JSX.Element {
             </Card>
 
             <Card hoverable className="relative overflow-hidden bg-surface">
-              <div className="font-serif text-6xl font-bold text-warm-300/80 absolute -right-1 -top-1 select-none">
-                03
+              <div className="font-handwriting text-5xl font-bold text-forest/20 absolute right-4 top-3 select-none">
+                #03
               </div>
               <div className="h-12 w-12 rounded-2xl bg-apricot/20 text-[#B86B14] flex items-center justify-center mb-4">
                 <DownloadCloud className="h-6 w-6" />
@@ -193,6 +205,9 @@ export default function HomePage(): React.JSX.Element {
             <Badge variant="emerald">AUTHENTIC MEMORIES</Badge>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-ink font-serif">
               Everything Needed for Unforgettable Events
+              <span className="font-handwriting text-emerald text-2xl font-bold block sm:inline sm:ml-2">
+                — crafted for real moments
+              </span>
             </h2>
             <p className="text-sm text-ink-secondary">
               The thoughtful features that make IWAI the premier photo platform for hosts.
@@ -258,6 +273,9 @@ export default function HomePage(): React.JSX.Element {
             <Badge variant="brand">HONEST PRICING</Badge>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-ink font-serif">
               Simple Plans for Every Celebration
+              <span className="font-handwriting text-forest text-2xl font-bold block sm:inline sm:ml-2">
+                — no hidden guest limits
+              </span>
             </h2>
             <p className="text-sm text-ink-secondary">
               Host small gatherings completely free. Upgrade for weddings and milestone celebrations.

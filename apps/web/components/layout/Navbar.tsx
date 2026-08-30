@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
+import { LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
 import { useAuth } from "../../lib/auth-context";
 import { Button } from "../ui/Button";
 import { Logo } from "../ui/Logo";
@@ -19,36 +19,30 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-warm-300 bg-warm-100/90 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand */}
-        <Link href="/" className="flex items-baseline gap-1.5 group py-1">
-          <Logo className="h-8 w-auto text-forest transition-all duration-200 group-hover:opacity-85" badge="PRO" />
+        <Link href="/" className="flex items-center group py-1">
+          <Logo className="h-8 w-auto text-forest transition-opacity duration-200 group-hover:opacity-80" />
         </Link>
 
         {/* Center Nav (marketing) */}
         {!pathname?.startsWith("/dashboard") && !pathname?.startsWith("/events") && (
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-ink-secondary">
+          <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-ink-secondary">
             <Link
               href="#how-it-works"
               className="hover:text-ink transition-colors"
             >
-              How It Works
+              Events
             </Link>
             <Link
               href="#features"
               className="hover:text-ink transition-colors"
             >
-              Features
+              About
             </Link>
             <Link
               href="#pricing"
               className="hover:text-ink transition-colors"
             >
               Pricing
-            </Link>
-            <Link
-              href="#faq"
-              className="hover:text-ink transition-colors"
-            >
-              FAQ
             </Link>
           </nav>
         )}
@@ -83,15 +77,15 @@ export function Navbar() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2.5">
-              <Link href="/login">
-                <Button size="sm" variant="ghost">
-                  Sign In
-                </Button>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/login"
+                className="hidden sm:inline-block text-sm font-medium text-ink-secondary hover:text-ink transition-colors px-2"
+              >
+                Sign In
               </Link>
               <Link href="/register">
-                <Button size="sm" variant="primary">
-                  <Sparkles className="h-4 w-4" />
+                <Button size="sm" className="rounded-full px-5 py-2 bg-forest text-surface font-medium hover:bg-forest-hover shadow-sm transition-all text-sm">
                   Get Started
                 </Button>
               </Link>

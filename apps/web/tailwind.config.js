@@ -74,6 +74,7 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         serif: ["var(--font-serif)", "Georgia", "serif"],
+        handwriting: ["var(--font-handwriting)", "cursive"],
       },
     },
   },
