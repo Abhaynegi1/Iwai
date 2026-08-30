@@ -17,6 +17,7 @@ import { Navbar } from "../components/layout/Navbar";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
+import { Logo } from "../components/ui/Logo";
 
 export const metadata: Metadata = {
   title: "IWAI — Event Memory & Shared Photo Gallery",
@@ -430,12 +431,10 @@ export default function HomePage(): React.JSX.Element {
       {/* ─── Footer ──────────────────────────────────────────────── */}
       <footer className="border-t border-warm-300 bg-surface py-12 text-ink-secondary text-xs">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-forest text-surface font-bold text-xs">
-              I
-            </div>
-            <span className="font-bold text-ink font-serif">IWAI</span>
-            <span>— The Event Memory Platform</span>
+          <div className="flex items-center gap-3">
+            <Logo className="h-6 w-auto text-forest" />
+            <span className="text-warm-500">|</span>
+            <span>The Event Memory Platform</span>
           </div>
           <p>© {new Date().getFullYear()} IWAI Inc. All rights reserved.</p>
         </div>

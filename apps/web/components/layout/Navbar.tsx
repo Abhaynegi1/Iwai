@@ -3,9 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Camera, Sparkles, LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
+import { Sparkles, LayoutDashboard, LogOut, PlusCircle } from "lucide-react";
 import { useAuth } from "../../lib/auth-context";
 import { Button } from "../ui/Button";
+import { Logo } from "../ui/Logo";
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -18,18 +19,8 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-warm-300 bg-warm-100/90 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-forest shadow-sm group-hover:scale-105 transition-transform duration-200">
-            <Camera className="h-5 w-5 text-surface" />
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-xl font-bold tracking-tight text-ink font-serif">
-              IWAI
-            </span>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-emerald">
-              PRO
-            </span>
-          </div>
+        <Link href="/" className="flex items-baseline gap-1.5 group py-1">
+          <Logo className="h-8 w-auto text-forest transition-all duration-200 group-hover:opacity-85" badge="PRO" />
         </Link>
 
         {/* Center Nav (marketing) */}

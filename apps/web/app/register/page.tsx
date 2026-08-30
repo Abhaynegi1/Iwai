@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Camera, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useAuth } from "../../lib/auth-context";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
+import { Logo } from "../../components/ui/Logo";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -44,11 +45,8 @@ export default function RegisterPage() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-forest-light blur-[120px] pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <Link href="/" className="flex items-center justify-center gap-2.5 mb-6 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-forest shadow-sm group-hover:scale-105 transition-transform duration-200">
-            <Camera className="h-5 w-5 text-surface" />
-          </div>
-          <span className="text-2xl font-bold tracking-tight text-ink font-serif">IWAI</span>
+        <Link href="/" className="flex items-center justify-center mb-6 group">
+          <Logo className="h-10 w-auto text-forest transition-transform duration-200 group-hover:scale-105" />
         </Link>
         <h2 className="text-center text-3xl font-bold tracking-tight text-ink font-serif">
           Create your account
