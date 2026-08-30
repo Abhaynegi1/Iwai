@@ -16,6 +16,7 @@
     "@iwai/api-client": "workspace:*",
     "@iwai/shared": "workspace:*",
     "@iwai/validation": "workspace:*",
+    "@neondatabase/auth": "0.5.0-beta",
     "clsx": "^2.0.0",
     "lucide-react": "^1.37.0",
     "next": "^15.0.0",

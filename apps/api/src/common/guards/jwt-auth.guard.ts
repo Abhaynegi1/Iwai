@@ -4,16 +4,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
-import type { OrganizerJwtPayload } from "@iwai/shared";
+import { AuthService } from "../../modules/auth/auth.service";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(
-    private jwtService: JwtService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -24,20 +19,8 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     const token = authHeader.split(" ")[1];
-
-    try {
-      const secret = this.configService.get<string>(
-        "JWT_SECRET",
-        "iwai-dev-jwt-super-secret-key-32chars-min",
-      );
-      const payload = await this.jwtService.verifyAsync<OrganizerJwtPayload>(
-        token,
-        { secret },
-      );
-      request.user = payload;
-      return true;
-    } catch {
-      throw new UnauthorizedException("Invalid or expired authentication token");
-    }
+    request.user = await this.authService.resolveUserFromToken(token);
+    return true;
   }
 }
+

@@ -7,12 +7,14 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import type { GuestJwtPayload, OrganizerJwtPayload } from "@iwai/shared";
+import { AuthService } from "../../modules/auth/auth.service";
 
 @Injectable()
 export class JwtOrGuestAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    private authService: AuthService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -46,10 +48,17 @@ export class JwtOrGuestAuthGuard implements CanActivate {
         request.authType = "organizer";
         return true;
       }
+    } catch {
+      // If JWT verification fails, check if it's an organizer Neon Auth session
+    }
 
-      throw new UnauthorizedException("Unrecognized token payload structure");
+    try {
+      request.user = await this.authService.resolveUserFromToken(token);
+      request.authType = "organizer";
+      return true;
     } catch {
       throw new UnauthorizedException("Invalid or expired authentication token");
     }
   }
 }
+

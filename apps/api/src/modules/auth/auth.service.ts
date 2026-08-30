@@ -7,7 +7,7 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import {
   organizations,
   organizationMembers,
@@ -215,6 +215,117 @@ export class AuthService {
       secret,
       expiresIn: "7d" as unknown as number,
     });
+  }
+
+  /**
+   * Resolves the authenticated organizer from either:
+   * 1. A signed JWT token (native organizer JWT)
+   * 2. A Neon Auth / Better Auth session token (Google OAuth or email session)
+   */
+  async resolveUserFromToken(token: string): Promise<OrganizerJwtPayload> {
+    const secret = this.config.get<string>(
+      "JWT_SECRET",
+      "iwai-dev-jwt-super-secret-key-32chars-min",
+    );
+
+    // 1. First attempt: standard JWT verification
+    try {
+      const payload = await this.jwtService.verifyAsync<OrganizerJwtPayload>(
+        token,
+        { secret },
+      );
+      if (payload && payload.sub && payload.email) {
+        return payload;
+      }
+    } catch {
+      // Token is not a signed JWT; check for Neon Auth session
+    }
+
+    // 2. Second attempt: query Neon Auth session from postgres
+    try {
+      const result = await this.db.execute(sql`
+        SELECT s.token, s.expires_at, u.id as neon_user_id, u.email, u.name, u.image
+        FROM neon_auth.session s
+        JOIN neon_auth.user u ON s.user_id = u.id
+        WHERE s.token = ${token} AND s.expires_at > NOW()
+        LIMIT 1;
+      `);
+
+      type NeonSessionRow = {
+        token: string;
+        expires_at: Date;
+        neon_user_id: string;
+        email: string;
+        name: string | null;
+        image: string | null;
+      };
+
+      const rows = (result as unknown) as NeonSessionRow[];
+      if (rows && rows.length > 0) {
+        const sessionRow = rows[0];
+        const email = String(sessionRow.email).toLowerCase();
+        const name = sessionRow.name || email.split("@")[0];
+        const avatarUrl = sessionRow.image || null;
+
+        // Find or auto-provision in public.users
+        let user = await this.db.query.users.findFirst({
+          where: eq(users.email, email),
+        });
+
+        if (!user) {
+          const slugBase = name
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "-")
+            .replace(/-+/g, "-")
+            .slice(0, 30);
+          const orgSlug = `${slugBase || "org"}-${Math.random().toString(36).substring(2, 7)}`;
+
+          const [createdUser] = await this.db
+            .insert(users)
+            .values({
+              email,
+              name,
+              avatarUrl,
+              role: "user",
+            })
+            .returning();
+
+          user = createdUser;
+
+          const [newOrg] = await this.db
+            .insert(organizations)
+            .values({
+              name: `${name}'s Organization`,
+              slug: orgSlug,
+              ownerId: user.id,
+            })
+            .returning();
+
+          await this.db.insert(organizationMembers).values({
+            organizationId: newOrg.id,
+            userId: user.id,
+            role: "owner",
+          });
+
+          await this.db.insert(subscriptions).values({
+            organizationId: newOrg.id,
+            planTier: "free",
+            status: "active",
+            maxEvents: 1,
+          });
+        }
+
+        return {
+          sub: user.id,
+          email: user.email,
+          role: user.role,
+        };
+      }
+    } catch {
+      // Table neon_auth may not exist or query error
+    }
+
+    throw new UnauthorizedException("Invalid or expired authentication token");
   }
 
   private toUserEntity(user: User): UserEntity {
