@@ -9,7 +9,7 @@ import {
 
 export function HeroScrapbook() {
   return (
-    <div className="relative w-full max-w-[580px] mx-auto min-h-[480px] sm:min-h-[540px] select-none">
+    <div className="relative w-full max-w-[580px] mx-auto min-h-[540px] sm:min-h-[600px] select-none">
       
       {/* ── Top Arrow & Annotation: "real moments" ── */}
       <div className="absolute top-2 left-12 sm:left-24 z-20 flex items-center gap-1.5 pointer-events-none">

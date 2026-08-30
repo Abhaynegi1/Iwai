@@ -25,19 +25,19 @@ export function PhotoPrint({
   className = "",
   priority = false,
 }: PhotoPrintProps) {
-  const aspectClass =
+  const dimensions =
     aspectRatio === "3/4"
-      ? "aspect-[3/4]"
+      ? { width: 300, height: 400 }
       : aspectRatio === "1/1"
-      ? "aspect-square"
+      ? { width: 400, height: 400 }
       : aspectRatio === "16/9"
-      ? "aspect-[16/9]"
-      : "aspect-[4/3]";
+      ? { width: 480, height: 270 }
+      : { width: 400, height: 300 };
 
   return (
     <div
       style={{ transform: `rotate(${rotation}deg)` }}
-      className={`group relative inline-block transition-transform duration-300 hover:rotate-0 hover:scale-[1.02] hover:z-20 ${className}`}
+      className={`group relative block w-full transition-transform duration-300 hover:rotate-0 hover:scale-[1.02] hover:z-20 ${className}`}
     >
       {/* Tape decoration */}
       {tape === "top" && (
@@ -58,14 +58,15 @@ export function PhotoPrint({
 
       {/* Physical Photo Frame with Warm Ivory Paper border */}
       <div className="bg-surface p-2.5 sm:p-3 rounded-md border border-warm-300/80 shadow-[0_10px_25px_rgba(18,60,53,0.08),0_2px_6px_rgba(0,0,0,0.04)]">
-        <div className={`relative w-full ${aspectClass} overflow-hidden rounded-[2px] bg-warm-200`}>
+        <div className="relative w-full overflow-hidden rounded-[2px] bg-warm-200">
           <Image
             src={src}
             alt={alt}
-            fill
+            width={dimensions.width}
+            height={dimensions.height}
             sizes="(max-width: 768px) 100vw, 400px"
             priority={priority}
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
           {/* Subtle warm analog film overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
