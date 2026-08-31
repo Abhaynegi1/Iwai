@@ -40,7 +40,7 @@ export function FinalCTA() {
           </Link>
           <Link href="/login">
             <button className="rounded-2xl px-8 py-3.5 bg-surface/90 border border-warm-400/90 hover:bg-warm-200 text-ink font-medium text-sm transition-all">
-              Join Event
+              Sign In
             </button>
           </Link>
         </div>

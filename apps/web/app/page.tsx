@@ -51,16 +51,16 @@ export default function HomePage(): React.JSX.Element {
                 Collect and share photos from the moments that matter. No app, no sign up. Just scan, shoot and share.
               </p>
 
-              {/* Dual Action Buttons */}
+              {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3.5 pt-1">
                 <Link href="/register">
                   <button className="rounded-2xl px-7 py-3.5 bg-forest hover:bg-forest-hover text-surface font-medium text-sm shadow-[0_4px_16px_rgba(18,60,53,0.18)] transition-all">
                     Create Event
                   </button>
                 </Link>
-                <Link href="/login">
+                <Link href="#how-it-works">
                   <button className="rounded-2xl px-7 py-3.5 bg-surface/90 border border-warm-400/90 hover:bg-warm-200 text-ink font-medium text-sm transition-all">
-                    Join Event
+                    How It Works
                   </button>
                 </Link>
               </div>
