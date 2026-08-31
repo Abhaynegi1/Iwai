@@ -1,5 +1,16 @@
 import type { NextConfig } from "next";
 import path from "path";
+import fs from "fs";
+
+// Load root .env in monorepo environment
+const rootEnvPath = path.resolve(__dirname, "../../.env");
+if (fs.existsSync(rootEnvPath) && typeof (process as unknown as { loadEnvFile?: (path: string) => void }).loadEnvFile === "function") {
+  try {
+    (process as unknown as { loadEnvFile: (path: string) => void }).loadEnvFile(rootEnvPath);
+  } catch {
+    // Ignore if already loaded
+  }
+}
 
 const nextConfig: NextConfig = {
   // Tell Next.js where the monorepo root is to avoid lockfile confusion
