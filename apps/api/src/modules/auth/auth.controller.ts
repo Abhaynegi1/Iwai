@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   UseGuards,
   UsePipes,
@@ -52,5 +53,14 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async getProfile(@CurrentUser() user: OrganizerJwtPayload) {
     return this.authService.getCurrentUser(user.sub);
+  }
+
+  @Patch("me")
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(
+    @CurrentUser() user: OrganizerJwtPayload,
+    @Body() body: { name?: string; avatarUrl?: string },
+  ) {
+    return this.authService.updateCurrentUser(user.sub, body);
   }
 }

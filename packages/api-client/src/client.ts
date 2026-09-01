@@ -112,6 +112,13 @@ export class IwaiApiClient {
     getMe: (options?: RequestOptions): Promise<ApiResponse<UserEntity>> => {
       return this.get<UserEntity>("/auth/me", options);
     },
+    /** Update current organizer profile */
+    updateMe: (
+      input: { name?: string; avatarUrl?: string },
+      options?: RequestOptions,
+    ): Promise<ApiResponse<UserEntity>> => {
+      return this.patch<UserEntity>("/auth/me", input, options);
+    },
   };
 
   /**

@@ -9,7 +9,7 @@ import { Button } from "../ui/Button";
 import { Logo } from "../ui/Logo";
 
 export function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, openProfileModal } = useAuth();
   const pathname = usePathname();
 
   const isAuthPage = pathname === "/login" || pathname === "/register";
@@ -63,10 +63,28 @@ export function Navbar() {
                   Dashboard
                 </Button>
               </Link>
-              <div className="flex items-center gap-2 border-l border-warm-300 pl-3">
-                <span className="text-xs font-medium text-ink-secondary hidden lg:inline-block">
-                  {user.name}
-                </span>
+              <div className="flex items-center gap-1.5 border-l border-warm-300 pl-3">
+                <button
+                  type="button"
+                  onClick={openProfileModal}
+                  title="View & customize your profile"
+                  className="flex items-center gap-2 px-2.5 py-1 rounded-xl hover:bg-warm-200 transition-colors group"
+                >
+                  <div className="h-7 w-7 rounded-full bg-forest/10 border border-forest/20 flex items-center justify-center text-xs font-bold text-forest overflow-hidden shrink-0 shadow-xs">
+                    {user.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span>{user.name?.charAt(0).toUpperCase() || "O"}</span>
+                    )}
+                  </div>
+                  <span className="text-xs font-medium text-ink-secondary group-hover:text-ink hidden lg:inline-block max-w-[120px] truncate">
+                    {user.name}
+                  </span>
+                </button>
                 <button
                   onClick={logout}
                   title="Log out"

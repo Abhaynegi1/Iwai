@@ -158,6 +158,31 @@ export class AuthService {
     return this.toUserEntity(user);
   }
 
+  async updateCurrentUser(
+    userId: string,
+    data: { name?: string; avatarUrl?: string },
+  ): Promise<UserEntity> {
+    const updateData: Partial<{ name: string; avatarUrl: string | null }> = {};
+    if (data.name !== undefined && data.name.trim().length > 0) {
+      updateData.name = data.name.trim();
+    }
+    if (data.avatarUrl !== undefined) {
+      updateData.avatarUrl = data.avatarUrl ? data.avatarUrl.trim() : null;
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      await this.db
+        .update(users)
+        .set({
+          ...updateData,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId));
+    }
+
+    return this.getCurrentUser(userId);
+  }
+
   async generateTokens(user: User): Promise<AuthTokens> {
     const accessSecret = this.config.get<string>(
       "JWT_SECRET",
@@ -244,10 +269,10 @@ export class AuthService {
     // 2. Second attempt: query Neon Auth session from postgres
     try {
       const result = await this.db.execute(sql`
-        SELECT s.token, s.expires_at, u.id as neon_user_id, u.email, u.name, u.image
+        SELECT s.token, s."expiresAt" as expires_at, u.id as neon_user_id, u.email, u.name, u.image
         FROM neon_auth.session s
-        JOIN neon_auth.user u ON s.user_id = u.id
-        WHERE s.token = ${token} AND s.expires_at > NOW()
+        JOIN neon_auth.user u ON s."userId" = u.id
+        WHERE s.token = ${token} AND s."expiresAt" > NOW()
         LIMIT 1;
       `);
 
@@ -321,8 +346,8 @@ export class AuthService {
           role: user.role,
         };
       }
-    } catch {
-      // Table neon_auth may not exist or query error
+    } catch (err: unknown) {
+      console.warn("Failed to resolve session from neon_auth tables:", err);
     }
 
     throw new UnauthorizedException("Invalid or expired authentication token");

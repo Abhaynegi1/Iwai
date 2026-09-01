@@ -11,11 +11,16 @@ import type { UserEntity } from "@iwai/shared";
 import type { LoginInput, RegisterInput } from "@iwai/validation";
 import { api, setClientToken } from "./api";
 import { authClient } from "./neon-auth";
+import { ProfileModal } from "../components/ui/ProfileModal";
 
 interface AuthContextType {
   user: UserEntity | null;
   token: string | null;
   isLoading: boolean;
+  isProfileModalOpen: boolean;
+  openProfileModal: () => void;
+  closeProfileModal: () => void;
+  updateProfile: (data: { name?: string; avatarUrl?: string }) => Promise<void>;
   login: (input: LoginInput) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   register: (input: RegisterInput) => Promise<void>;
@@ -26,11 +31,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TOKEN_KEY = "iwai_organizer_token";
 const REFRESH_TOKEN_KEY = "iwai_organizer_refresh_token";
+const OPEN_PROFILE_KEY = "iwai_open_profile_on_login";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserEntity | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+
+  const openProfileModal = useCallback(() => setIsProfileModalOpen(true), []);
+  const closeProfileModal = useCallback(() => setIsProfileModalOpen(false), []);
+
+  const updateProfile = useCallback(
+    async (data: { name?: string; avatarUrl?: string }) => {
+      const response = await api.auth.updateMe(data);
+      if (response.success && response.data) {
+        setUser(response.data);
+      }
+    },
+    [],
+  );
 
   const clearSession = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
@@ -100,10 +120,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, [clearSession]);
 
+  // Check if we should auto-open profile modal after login or OAuth callback
+  useEffect(() => {
+    if (user && !isLoading) {
+      const urlParams =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search)
+          : null;
+      const hasWelcomeParam =
+        urlParams?.get("showProfile") === "true" ||
+        urlParams?.get("welcome") === "true";
+      const hasLoginFlag =
+        typeof window !== "undefined" &&
+        sessionStorage.getItem(OPEN_PROFILE_KEY) === "true";
+
+      if (hasWelcomeParam || hasLoginFlag) {
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem(OPEN_PROFILE_KEY);
+        }
+        setIsProfileModalOpen(true);
+      }
+    }
+  }, [user, isLoading]);
+
   const loginWithGoogle = useCallback(async () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(OPEN_PROFILE_KEY, "true");
+    }
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: `${window.location.origin}/dashboard`,
+      callbackURL: `${window.location.origin}/dashboard?showProfile=true`,
     });
   }, []);
 
@@ -124,6 +170,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const meRes = await api.auth.getMe();
           if (meRes.success && meRes.data) {
             setUser(meRes.data);
+            setIsProfileModalOpen(true);
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem(OPEN_PROFILE_KEY, "true");
+            }
             return;
           }
         }
@@ -141,6 +191,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setClientToken(tokens.accessToken);
         setToken(tokens.accessToken);
         setUser(userData);
+        setIsProfileModalOpen(true);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(OPEN_PROFILE_KEY, "true");
+        }
       }
     } finally {
       setIsLoading(false);
@@ -165,6 +219,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const meRes = await api.auth.getMe();
           if (meRes.success && meRes.data) {
             setUser(meRes.data);
+            setIsProfileModalOpen(true);
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem(OPEN_PROFILE_KEY, "true");
+            }
             return;
           }
         }
@@ -182,6 +240,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setClientToken(tokens.accessToken);
         setToken(tokens.accessToken);
         setUser(userData);
+        setIsProfileModalOpen(true);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(OPEN_PROFILE_KEY, "true");
+        }
       }
     } finally {
       setIsLoading(false);
@@ -204,6 +266,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         token,
         isLoading,
+        isProfileModalOpen,
+        openProfileModal,
+        closeProfileModal,
+        updateProfile,
         login,
         loginWithGoogle,
         register,
@@ -211,6 +277,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
+      <ProfileModal />
     </AuthContext.Provider>
   );
 }
