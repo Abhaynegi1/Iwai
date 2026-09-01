@@ -17,6 +17,9 @@ export function HeroScrapbook() {
           real moments
         </span>
         <DoodleArrow direction="curved-down" className="w-10 sm:w-12 h-5 sm:h-6 text-forest rotate-12" />
+        <span className="hidden md:inline-flex items-center gap-1 font-handwriting text-xs text-forest/70 bg-warm-200/90 border border-forest/20 px-2 py-0.5 rounded-full ml-1 rotate-2 shadow-xs">
+          ✦ hold &amp; move photos
+        </span>
       </div>
 
       {/* ── Photo 1: Top-Left Dinner Table ── */}

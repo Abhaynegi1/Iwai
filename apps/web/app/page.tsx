@@ -24,7 +24,7 @@ export default function HomePage(): React.JSX.Element {
       <Navbar />
 
       {/* ─── Hero Section ────────────────────────────────────────── */}
-      <section className="relative pt-6 pb-14 sm:pt-14 sm:pb-20 overflow-hidden">
+      <section className="relative pt-6 pb-14 sm:pt-14 sm:pb-20 overflow-x-clip">
         {/* Soft warm paper ambient background */}
         <div className="absolute top-0 left-1/3 -translate-x-1/2 h-[550px] w-[800px] rounded-full bg-gradient-to-b from-[#123C35]/5 via-[#E5E7E2]/30 to-transparent blur-[140px] pointer-events-none" />
 

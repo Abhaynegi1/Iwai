@@ -4,7 +4,7 @@ import { DoodleHeart, DoodleStar } from "../ui/Doodles";
 
 export function MomentsGallery() {
   return (
-    <section className="py-16 sm:py-24 border-t border-warm-300/80 overflow-hidden">
+    <section className="py-16 sm:py-24 border-t border-warm-300/80 overflow-x-clip">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Heading */}
