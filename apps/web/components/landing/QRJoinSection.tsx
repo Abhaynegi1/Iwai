@@ -31,18 +31,18 @@ export function QRJoinSection() {
 
             {/* Center: Copy */}
             <div className="text-center lg:text-left max-w-lg space-y-2">
-              <h3 className="font-handwriting text-3xl sm:text-4xl font-bold text-forest leading-tight">
+              <h3 className="font-handwriting text-3xl xs:text-4xl font-bold text-forest leading-tight">
                 Guests join in seconds
               </h3>
-              <p className="text-sm sm:text-base text-ink-secondary font-sans leading-relaxed">
+              <p className="text-xs sm:text-base text-ink-secondary font-sans leading-relaxed">
                 Generate a custom QR code for your event. Guests simply scan with their camera to upload photos directly to your drive.
               </p>
             </div>
 
             {/* Right: CTA Button + Camera Doodle */}
-            <div className="flex items-center gap-5">
-              <Link href="/register">
-                <button className="rounded-2xl px-8 py-3.5 bg-forest hover:bg-forest-hover text-surface font-medium text-sm shadow-[0_4px_16px_rgba(18,60,53,0.18)] transition-all">
+            <div className="flex items-center gap-5 w-full sm:w-auto justify-center">
+              <Link href="/register" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto rounded-2xl px-8 py-3.5 bg-forest hover:bg-forest-hover text-surface font-medium text-sm shadow-[0_4px_16px_rgba(18,60,53,0.18)] transition-all text-center">
                   Create Event
                 </button>
               </Link>

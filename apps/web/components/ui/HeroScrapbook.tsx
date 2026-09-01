@@ -9,14 +9,14 @@ import {
 
 export function HeroScrapbook() {
   return (
-    <div className="relative w-full max-w-[580px] mx-auto min-h-[540px] sm:min-h-[600px] select-none">
+    <div className="relative w-full max-w-[580px] mx-auto min-h-[480px] xs:min-h-[530px] sm:min-h-[600px] select-none">
       
       {/* ── Top Arrow & Annotation: "real moments" ── */}
-      <div className="absolute top-2 left-12 sm:left-24 z-20 flex items-center gap-1.5 pointer-events-none">
-        <span className="font-handwriting text-xl sm:text-2xl font-bold text-forest -rotate-6">
+      <div className="absolute top-2 left-6 xs:left-12 sm:left-24 z-20 flex items-center gap-1 pointer-events-none">
+        <span className="font-handwriting text-lg sm:text-2xl font-bold text-forest -rotate-6">
           real moments
         </span>
-        <DoodleArrow direction="curved-down" className="w-12 h-6 text-forest rotate-12" />
+        <DoodleArrow direction="curved-down" className="w-10 sm:w-12 h-5 sm:h-6 text-forest rotate-12" />
       </div>
 
       {/* ── Photo 1: Top-Left Dinner Table ── */}
@@ -73,16 +73,16 @@ export function HeroScrapbook() {
       </div>
 
       {/* ── Bottom-Left Doodled Details & Arrow: "taken by everyone" ── */}
-      <div className="absolute bottom-2 sm:bottom-4 left-4 sm:left-14 z-30 flex items-center gap-2 pointer-events-none">
-        <span className="font-handwriting text-xl sm:text-2xl font-bold text-forest -rotate-3">
+      <div className="absolute bottom-2 sm:bottom-4 left-2 xs:left-6 sm:left-14 z-30 flex items-center gap-1.5 pointer-events-none">
+        <span className="font-handwriting text-lg sm:text-2xl font-bold text-forest -rotate-3">
           taken by everyone
         </span>
-        <DoodleArrow direction="curved-up" className="w-14 h-7 text-forest -rotate-6" />
+        <DoodleArrow direction="curved-up" className="w-10 sm:w-14 h-5 sm:h-7 text-forest -rotate-6" />
       </div>
 
       {/* ── Bottom-Right Camera Doodle ── */}
-      <div className="absolute -bottom-2 -right-1 sm:right-2 z-20 pointer-events-none">
-        <DoodleCamera className="w-14 h-14 text-forest drop-shadow-sm rotate-6" />
+      <div className="absolute -bottom-2 right-0 sm:right-2 z-20 pointer-events-none">
+        <DoodleCamera className="w-11 h-11 sm:w-14 sm:h-14 text-forest drop-shadow-sm rotate-6" />
       </div>
 
       {/* ── Floating Heart and Star Accents ── */}

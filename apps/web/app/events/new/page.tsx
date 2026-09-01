@@ -232,9 +232,9 @@ export default function NewEventPage() {
         </Card>
 
         {/* Submit */}
-        <div className="flex items-center justify-end gap-3 pt-4">
-          <Link href="/dashboard">
-            <Button variant="ghost" type="button">
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-4">
+          <Link href="/dashboard" className="w-full sm:w-auto">
+            <Button variant="ghost" type="button" className="w-full sm:w-auto justify-center">
               Cancel
             </Button>
           </Link>
@@ -243,8 +243,9 @@ export default function NewEventPage() {
             size="lg"
             type="submit"
             isLoading={loading}
+            className="w-full sm:w-auto justify-center"
           >
-            Create Event & Generate QR
+            Create Event &amp; Generate QR
           </Button>
         </div>
       </form>

@@ -17,7 +17,7 @@ export function FinalCTA() {
 
         {/* Emotional Heading */}
         <div className="space-y-2">
-          <h2 className="font-handwriting text-5xl sm:text-6xl lg:text-7xl font-bold text-forest leading-[1.05] tracking-tight">
+          <h2 className="font-handwriting text-3xl xs:text-5xl sm:text-6xl lg:text-7xl font-bold text-forest leading-[1.08] sm:leading-[1.05] tracking-tight">
             Make memories worth{" "}
             <span className="relative inline-block">
               coming back to.
@@ -27,19 +27,19 @@ export function FinalCTA() {
         </div>
 
         {/* Subtext */}
-        <p className="text-base sm:text-lg text-ink-secondary font-sans max-w-lg mx-auto leading-relaxed">
+        <p className="text-sm xs:text-base sm:text-lg text-ink-secondary font-sans max-w-lg mx-auto leading-relaxed">
           Create an event in seconds and let everyone at the party bring their perspective into one shared memory.
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-          <Link href="/register">
-            <button className="rounded-2xl px-8 py-3.5 bg-forest hover:bg-forest-hover text-surface font-medium text-sm shadow-[0_4px_16px_rgba(18,60,53,0.18)] transition-all">
+        <div className="flex flex-col xs:flex-row items-center justify-center gap-3.5 pt-2 max-w-xs xs:max-w-none mx-auto w-full">
+          <Link href="/register" className="w-full xs:w-auto">
+            <button className="w-full xs:w-auto rounded-2xl px-8 py-3.5 bg-forest hover:bg-forest-hover text-surface font-medium text-sm shadow-[0_4px_16px_rgba(18,60,53,0.18)] transition-all text-center">
               Create Event
             </button>
           </Link>
-          <Link href="/login">
-            <button className="rounded-2xl px-8 py-3.5 bg-surface/90 border border-warm-400/90 hover:bg-warm-200 text-ink font-medium text-sm transition-all">
+          <Link href="/login" className="w-full xs:w-auto">
+            <button className="w-full xs:w-auto rounded-2xl px-8 py-3.5 bg-surface/90 border border-warm-400/90 hover:bg-warm-200 text-ink font-medium text-sm transition-all text-center">
               Sign In
             </button>
           </Link>

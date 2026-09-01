@@ -50,15 +50,15 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-ink font-serif">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink font-serif">
             Welcome back, {user?.name || "Organizer"}
           </h1>
-          <p className="mt-1 text-sm text-ink-secondary">
+          <p className="mt-1 text-xs sm:text-sm text-ink-secondary">
             Manage your events, guest QR invitations, and live shared galleries.
           </p>
         </div>
-        <Link href="/events/new">
-          <Button size="md" variant="primary" className="shadow-sm">
+        <Link href="/events/new" className="w-full sm:w-auto">
+          <Button size="md" variant="primary" className="shadow-sm w-full sm:w-auto justify-center">
             <Plus className="h-4 w-4" />
             Create Event
           </Button>

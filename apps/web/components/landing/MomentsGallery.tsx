@@ -8,14 +8,14 @@ export function MomentsGallery() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Heading */}
-        <div className="mb-12 sm:mb-16">
-          <h2 className="font-handwriting text-4xl sm:text-5xl lg:text-6xl font-bold text-forest tracking-tight">
+        <div className="mb-10 sm:mb-16 text-center sm:text-left">
+          <h2 className="font-handwriting text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-bold text-forest tracking-tight">
             Real moments. Real people.
           </h2>
         </div>
 
         {/* Candid Photo Prints Row / Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 items-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-6 items-center">
           
           {/* Photo 1: Cheers */}
           <div className="col-span-1">
@@ -72,8 +72,8 @@ export function MomentsGallery() {
         </div>
 
         {/* Bottom Annotation */}
-        <div className="mt-12 sm:mt-14 flex items-center justify-end gap-3 text-forest pr-2 sm:pr-6">
-          <span className="font-handwriting text-2xl sm:text-3xl font-bold text-forest tracking-tight">
+        <div className="mt-10 sm:mt-14 flex items-center justify-center sm:justify-end gap-3 text-forest pr-0 sm:pr-6">
+          <span className="font-handwriting text-xl sm:text-2xl sm:text-3xl font-bold text-forest tracking-tight">
             candid. unfiltered. beautiful.
           </span>
           <div className="flex items-center gap-1 text-forest">

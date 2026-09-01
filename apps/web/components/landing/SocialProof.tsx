@@ -30,7 +30,7 @@ export function SocialProof() {
 
           {/* Social Proof Statement */}
           <div className="text-center sm:text-left">
-            <span className="font-handwriting text-2xl sm:text-3xl font-bold text-forest relative inline-block">
+            <span className="font-handwriting text-xl xs:text-2xl sm:text-3xl font-bold text-forest relative inline-block">
               Loved by 1,200+ hosts and their guests
               {/* Subtle underline */}
               <svg

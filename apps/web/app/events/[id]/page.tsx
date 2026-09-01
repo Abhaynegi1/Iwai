@@ -286,7 +286,7 @@ export default function EventWorkspacePage({ params }: PageProps) {
               )}
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-ink font-serif">
+            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-ink font-serif break-words">
               {event.name}
             </h1>
 
