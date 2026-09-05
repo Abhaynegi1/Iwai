@@ -1,7 +1,7 @@
 import { IwaiApiClient } from "@iwai/api-client";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const rawBaseUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api").trim().replace(/\/$/, "");
+const API_BASE_URL = rawBaseUrl.endsWith("/api") ? rawBaseUrl : `${rawBaseUrl}/api`;
 
 /**
  * Shared API client instance for Web application.

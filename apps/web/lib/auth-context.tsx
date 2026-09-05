@@ -72,30 +72,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setClientToken(sessionToken);
             setToken(sessionToken);
 
-            // Fetch profile & organization link from backend API
-            const response = await api.auth.getMe();
-            if (response.success && response.data) {
-              setUser(response.data);
-              setIsLoading(false);
-              return;
-            } else if (neonSession.data?.user) {
-              // Fallback to Neon user object if getMe sync is pending
+            // If Neon session has user details, immediately unlock UI
+            if (neonSession.data?.user) {
               const u = neonSession.data.user;
               setUser({
                 id: u.id,
                 email: u.email,
-                name: u.name,
+                name: u.name || "Organizer",
                 avatarUrl: u.image || null,
                 role: "user",
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
               });
               setIsLoading(false);
+            }
+
+            // Sync full backend profile asynchronously without blocking the UI
+            api.auth
+              .getMe()
+              .then((response) => {
+                if (response.success && response.data) {
+                  setUser(response.data);
+                }
+              })
+              .catch((err) => {
+                console.warn("Backend user sync skipped:", err);
+              });
+
+            if (neonSession.data?.user) {
               return;
             }
           }
-        } catch {
-          // Neon Auth check failed, check legacy localStorage
+        } catch (neonErr) {
+          console.warn("Neon Auth check failed:", neonErr);
         }
 
         // 2. Legacy / fallback token in localStorage
@@ -103,10 +112,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (storedToken) {
           setClientToken(storedToken);
           setToken(storedToken);
-          const response = await api.auth.getMe();
-          if (response.success && response.data) {
-            setUser(response.data);
-          } else {
+          try {
+            const response = await api.auth.getMe();
+            if (response.success && response.data) {
+              setUser(response.data);
+            } else {
+              clearSession();
+            }
+          } catch {
             clearSession();
           }
         }
