@@ -62,6 +62,16 @@ export class PhotosService {
       throw new ForbiddenException("Guest uploads have been disabled for this event");
     }
 
+    if (
+      event.validUntil &&
+      new Date() > new Date(event.validUntil) &&
+      role === "guest"
+    ) {
+      throw new ForbiddenException(
+        `The upload window for this event closed on ${new Date(event.validUntil).toLocaleDateString()}. You can still view the photos!`,
+      );
+    }
+
     // Check attendee quota if role is guest
     if (role === "guest") {
       const [guestPhotoCountResult] = await this.db

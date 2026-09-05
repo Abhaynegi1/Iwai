@@ -65,6 +65,7 @@ export class EventsService {
         eventCode,
         startsAt: new Date(input.startsAt),
         endsAt: new Date(input.endsAt),
+        validUntil: input.validUntil ? new Date(input.validUntil) : null,
         status: "active",
         maxPhotosPerGuest: input.maxPhotosPerGuest ?? 50,
         maxTotalPhotos: input.maxTotalPhotos ?? 250,
@@ -173,6 +174,7 @@ export class EventsService {
       coverPhotoUrl: event.coverPhotoUrl,
       startsAt: event.startsAt.toISOString(),
       endsAt: event.endsAt.toISOString(),
+      validUntil: event.validUntil ? event.validUntil.toISOString() : null,
       status: event.status,
       isGuestUploadEnabled: event.isGuestUploadEnabled,
       isPublicGallery: event.isPublicGallery,
@@ -204,6 +206,9 @@ export class EventsService {
         ...(input.location !== undefined ? { location: input.location } : {}),
         ...(input.startsAt ? { startsAt: new Date(input.startsAt) } : {}),
         ...(input.endsAt ? { endsAt: new Date(input.endsAt) } : {}),
+        ...(input.validUntil !== undefined
+          ? { validUntil: input.validUntil ? new Date(input.validUntil) : null }
+          : {}),
         ...(input.status ? { status: input.status } : {}),
         ...(input.maxPhotosPerGuest ? { maxPhotosPerGuest: input.maxPhotosPerGuest } : {}),
         ...(input.maxTotalPhotos ? { maxTotalPhotos: input.maxTotalPhotos } : {}),
@@ -259,6 +264,7 @@ export class EventsService {
       isPublicGallery: event.isPublicGallery,
       storageLimitBytes: Number(event.storageLimitBytes),
       expiresAt: event.expiresAt ? event.expiresAt.toISOString() : null,
+      validUntil: event.validUntil ? event.validUntil.toISOString() : null,
       createdAt: event.createdAt.toISOString(),
       updatedAt: event.updatedAt.toISOString(),
     };

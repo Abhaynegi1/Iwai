@@ -92,6 +92,7 @@ export interface EventEntity {
   isPublicGallery: boolean;
   storageLimitBytes: number;
   expiresAt: string | null;
+  validUntil: string | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -186,6 +186,7 @@ export class AttendeesService {
       isPublicGallery: event.isPublicGallery,
       storageLimitBytes: Number(event.storageLimitBytes),
       expiresAt: event.expiresAt ? event.expiresAt.toISOString() : null,
+      validUntil: event.validUntil ? event.validUntil.toISOString() : null,
       createdAt: event.createdAt.toISOString(),
       updatedAt: event.updatedAt.toISOString(),
     };

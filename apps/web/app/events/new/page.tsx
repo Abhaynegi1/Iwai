@@ -30,6 +30,7 @@ export default function NewEventPage() {
 
   const [startsAt, setStartsAt] = useState(formatDateForInput(now));
   const [endsAt, setEndsAt] = useState(formatDateForInput(tomorrow));
+  const [validUntil, setValidUntil] = useState("");
   const [maxPhotosPerGuest, setMaxPhotosPerGuest] = useState(50);
   const [maxTotalPhotos, setMaxTotalPhotos] = useState(250);
   const [isGuestUploadEnabled, setIsGuestUploadEnabled] = useState(true);
@@ -47,6 +48,11 @@ export default function NewEventPage() {
       return;
     }
 
+    if (validUntil && new Date(validUntil) < startDate) {
+      setError("Upload deadline must be after the event start time.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -57,6 +63,7 @@ export default function NewEventPage() {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
         startsAt: startDate.toISOString(),
         endsAt: endDate.toISOString(),
+        validUntil: validUntil ? new Date(validUntil).toISOString() : undefined,
         maxPhotosPerGuest: Number(maxPhotosPerGuest),
         maxTotalPhotos: Number(maxTotalPhotos),
         isGuestUploadEnabled,
@@ -160,6 +167,16 @@ export default function NewEventPage() {
               required
               value={endsAt}
               onChange={(e) => setEndsAt(e.target.value)}
+            />
+          </div>
+
+          <div className="pt-2 border-t border-warm-300/80">
+            <Input
+              label="Upload Deadline / Valid Until (Optional)"
+              type="datetime-local"
+              value={validUntil}
+              onChange={(e) => setValidUntil(e.target.value)}
+              hint="Stop accepting new guest uploads after this date/time. Guests will still be able to join and view the shared gallery."
             />
           </div>
         </Card>

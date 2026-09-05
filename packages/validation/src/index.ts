@@ -57,6 +57,7 @@ const baseEventObject = {
   maxTotalPhotos: z.number().int().positive().max(5000).default(250),
   isGuestUploadEnabled: z.boolean().default(true),
   isPublicGallery: z.boolean().default(true),
+  validUntil: z.string().datetime().nullable().optional(),
 };
 
 export const createEventSchema = z
@@ -64,7 +65,14 @@ export const createEventSchema = z
   .refine((data) => new Date(data.endsAt) > new Date(data.startsAt), {
     message: "Event end time must be after start time",
     path: ["endsAt"],
-  });
+  })
+  .refine(
+    (data) => !data.validUntil || new Date(data.validUntil) >= new Date(data.startsAt),
+    {
+      message: "Upload deadline must be at or after event start time",
+      path: ["validUntil"],
+    },
+  );
 export type CreateEventInput = z.infer<typeof createEventSchema>;
 
 export const updateEventSchema = z

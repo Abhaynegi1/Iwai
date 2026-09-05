@@ -50,6 +50,7 @@ export const events = pgTable(
       .default(5 * 1024 * 1024 * 1024)
       .notNull(), // 5 GB
     expiresAt: timestamp("expires_at", { withTimezone: true }),
+    validUntil: timestamp("valid_until", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },

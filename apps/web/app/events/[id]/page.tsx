@@ -69,12 +69,18 @@ export default function EventWorkspacePage({ params }: PageProps) {
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [editLocation, setEditLocation] = useState("");
+  const [editValidUntil, setEditValidUntil] = useState("");
   const [editMaxPhotosPerGuest, setEditMaxPhotosPerGuest] = useState(50);
   const [editMaxTotalPhotos, setEditMaxTotalPhotos] = useState(250);
   const [editIsGuestUploadEnabled, setEditIsGuestUploadEnabled] = useState(true);
   const [editStatus, setEditStatus] = useState<string>("active");
   const [savingSettings, setSavingSettings] = useState(false);
   const [settingsSuccess, setSettingsSuccess] = useState(false);
+
+  const formatDateForInput = (d: Date) => {
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
 
   const printAreaRef = useRef<HTMLDivElement>(null);
 
@@ -94,6 +100,11 @@ export default function EventWorkspacePage({ params }: PageProps) {
         setEditName(eventRes.data.name);
         setEditDesc(eventRes.data.description || "");
         setEditLocation(eventRes.data.location || "");
+        setEditValidUntil(
+          eventRes.data.validUntil
+            ? formatDateForInput(new Date(eventRes.data.validUntil))
+            : "",
+        );
         setEditMaxPhotosPerGuest(eventRes.data.maxPhotosPerGuest);
         setEditMaxTotalPhotos(eventRes.data.maxTotalPhotos);
         setEditIsGuestUploadEnabled(eventRes.data.isGuestUploadEnabled);
@@ -180,6 +191,7 @@ export default function EventWorkspacePage({ params }: PageProps) {
         name: editName.trim(),
         description: editDesc.trim() || undefined,
         location: editLocation.trim() || undefined,
+        validUntil: editValidUntil ? new Date(editValidUntil).toISOString() : null,
         maxPhotosPerGuest: Number(editMaxPhotosPerGuest),
         maxTotalPhotos: Number(editMaxTotalPhotos),
         isGuestUploadEnabled: editIsGuestUploadEnabled,
@@ -420,14 +432,33 @@ export default function EventWorkspacePage({ params }: PageProps) {
                   style={{ width: `${quotaPercent}%` }}
                 />
               </div>
-              <div className="flex items-center justify-between text-xs text-ink-secondary">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-ink-secondary gap-2 pt-1 border-t border-warm-300/60">
                 <span>Guest Limit: {event.maxPhotosPerGuest} photos / guest</span>
-                <span>
-                  Guest Uploads:{" "}
-                  <strong className={event.isGuestUploadEnabled ? "text-emerald" : "text-coral"}>
-                    {event.isGuestUploadEnabled ? "Enabled" : "Disabled"}
-                  </strong>
-                </span>
+                <div className="flex items-center gap-3">
+                  <span>
+                    Uploads:{" "}
+                    <strong className={event.isGuestUploadEnabled ? "text-emerald" : "text-coral"}>
+                      {event.isGuestUploadEnabled ? "Enabled" : "Disabled"}
+                    </strong>
+                  </span>
+                  <span>•</span>
+                  <span>
+                    Upload Window:{" "}
+                    {event.validUntil ? (
+                      new Date() > new Date(event.validUntil) ? (
+                        <strong className="text-coral">
+                          Closed ({new Date(event.validUntil).toLocaleDateString()})
+                        </strong>
+                      ) : (
+                        <strong className="text-emerald">
+                          Open until {new Date(event.validUntil).toLocaleDateString()}
+                        </strong>
+                      )
+                    ) : (
+                      <strong className="text-forest">Always Open</strong>
+                    )}
+                  </span>
+                </div>
               </div>
             </Card>
 
@@ -784,6 +815,14 @@ export default function EventWorkspacePage({ params }: PageProps) {
                 label="Location"
                 value={editLocation}
                 onChange={(e) => setEditLocation(e.target.value)}
+              />
+
+              <Input
+                label="Upload Deadline / Valid Until (Optional)"
+                type="datetime-local"
+                value={editValidUntil}
+                onChange={(e) => setEditValidUntil(e.target.value)}
+                hint="After this date/time, guests will not be able to upload photos. The gallery remains viewable indefinitely."
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
